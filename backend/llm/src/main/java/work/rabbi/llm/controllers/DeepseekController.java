@@ -3,9 +3,10 @@ package work.rabbi.llm.controllers;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/llm/")
 @CrossOrigin(origins = "*")
 public class DeepseekController {
     private final ChatClient chatClient;
@@ -25,5 +26,14 @@ public class DeepseekController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/stream/{chat}")
+    public Flux<String> streamChat(@PathVariable String chat) {
+        return chatClient
+                .prompt()
+                .user(chat)
+                .stream()
+                .content();
     }
 }
