@@ -1,12 +1,7 @@
 import { useState } from "react";
-import Markdown from "react-markdown";
-import errorIcon from "@/assets/images/error.svg";
-import userIcon from "@/assets/images/user.svg";
-import aiIcon from "@/assets/images/ai_1875115.svg";
 import { Message } from "@/models/message";
-import useAutoScroll from "./hooks/useAutoScroll";
-import Spinner from "./components/Spinner";
 import ChatInput from "./components/ChatInput";
+import ChatMessage from "./components/ChatMessage";
 
 function formatChatGPTDateTime(): string {
   const now = new Date();
@@ -26,7 +21,7 @@ function App() {
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const scrollContentRef = useAutoScroll(isLoading);
+  // const scrollContentRef = useAutoScroll(isLoading);
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -99,109 +94,21 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col min-h-full w-full max-w-3xl mx-auto px-4">
+      <div className="flex flex-col min-h-screen w-full max-w-3xl mx-auto px-4">
         <header className="sticky top-0 shrink-0 z-20 bg-themecolor">
-          <h1 className="font-urbanist text-[1.65rem] font-semibold">
+          <h1 className="font-urbanist text-[1.65rem] font-semibold text-center">
             AI Chatbot
           </h1>
         </header>
 
-        <main>
-          <div className="relative grow flex flex-col gap-6 pt-6">
-            {messages.length === 0 && (
-              <div className="mt-3 font-urbanist text-primary-blue text-xl font-light space-y-2">
-                <p>👋 Welcome!</p>
-                <p>
-                  I am powered by the latest technology reports from leading
-                  institutions like the World Bank, the World Economic Forum,
-                  McKinsey, Deloitte and the OECD.
-                </p>
-                <p>Ask me anything about the latest technology trends.</p>
-              </div>
-            )}
-            <div ref={scrollContentRef} className="grow space-y-4">
-              {messages.map(
-                ({ id, role, content, loading, timestamp, error }) => (
-                  <div
-                    key={id}
-                    className={`flex items-start gap-4 py-4 px-3 rounded-xl ${
-                      role === "user" ? "bg-primary-blue/10" : ""
-                    }`}
-                  >
-                    {role === "user" ? (
-                      <img
-                        className="h-[26px] w-[26px] shrink-0"
-                        src={userIcon}
-                        alt="user"
-                      />
-                    ) : (
-                      <img
-                        className="h-[26px] w-[26px] shrink-0"
-                        src={aiIcon}
-                        alt="ai"
-                      />
-                    )}
-                    <div>
-                      <div className="markdown-container">
-                        {loading && !content ? (
-                          <Spinner />
-                        ) : role === "ai" ? (
-                          <Markdown>{content}</Markdown>
-                        ) : (
-                          <div className="whitespace-pre-line">{content}</div>
-                        )}
-                      </div>
-                      <div className="text-gray-500 text-sm">{timestamp}</div>
-                      {error && (
-                        <div
-                          className={`flex items-center gap-1 text-sm text-error-red ${
-                            content && "mt-2"
-                          }`}
-                        >
-                          <img
-                            className="h-5 w-5"
-                            src={errorIcon}
-                            alt="error"
-                          />
-                          <span>Error generating the response</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
+        <ChatMessage isLoading={isLoading} messages={messages} />
 
-            <ChatInput
-              isLoading={isLoading}
-              sendMessage={sendMessage}
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-            />
-            {/* <div className="sticky bottom-0 bg-themecolor py-4">
-            <div className="p-1.5 bg-primary-blue/35 rounded-3xl z-50 font-mono origin-bottom animate-chat duration-400">
-              <div className="pr-0.5 bg-black relative shrink-0 rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all">
-                <textarea
-                  placeholder="Ask anything"
-                  className="block w-full max-h-[140px] py-2 px-4 pr-11 bg-black rounded-3xl resize-none placeholder:text-primary-blue placeholder:leading-4 placeholder:-translate-y-1 sm:placeholder:leading-normal sm:placeholder:translate-y-0 focus:outline-none"
-                  ref={textareaRef}
-                  rows={1}
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                <button
-                  className="absolute top-1/2 -translate-y-1/2 right-3 p-1 rounded-md hover:bg-primary-blue/20"
-                  onClick={sendMessage}
-                >
-                  <img src={sendIcon} alt="send" />
-                </button>
-              </div>
-            </div>
-          </div> */}
-          </div>
-        </main>
-        
+        <ChatInput
+          isLoading={isLoading}
+          sendMessage={sendMessage}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+        />
       </div>
     </>
   );
