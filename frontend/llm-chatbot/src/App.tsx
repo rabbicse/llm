@@ -2,7 +2,7 @@ import { useState } from "react";
 import Markdown from "react-markdown";
 import errorIcon from "@/assets/images/error.svg";
 import userIcon from "@/assets/images/user.svg";
-import aiIcon from "@/assets/images/ai.svg";
+import aiIcon from "@/assets/images/ai_1875115.svg";
 import { Message } from "@/models/message";
 import useAutoScroll from "./hooks/useAutoScroll";
 import Spinner from "./components/Spinner";
