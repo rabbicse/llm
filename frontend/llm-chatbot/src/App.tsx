@@ -8,6 +8,7 @@ import { Message } from "@/models/message";
 import useAutoSize from "@/hooks/useAutoSize";
 import useAutoScroll from "./hooks/useAutoScroll";
 import Spinner from "./components/Spinner";
+import ChatInput from "./components/ChatInput";
 
 function formatChatGPTDateTime(): string {
   const now = new Date();
@@ -26,31 +27,19 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const textareaRef = useAutoSize(newMessage);
 
   const scrollContentRef = useAutoScroll(isLoading);
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey && !isLoading) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
+  // function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  //   if (e.key === "Enter" && !e.shiftKey && !isLoading) {
+  //     e.preventDefault();
+  //     sendMessage();
+  //   }
+  // }
 
   const sendMessage = async () => {
-    console.log(`calling ai...`);
     if (!newMessage.trim()) return;
     setIsLoading(true);
-    // setMessages([
-    //   ...messages,
-    //   {
-    //     id: Date.now().toString(),
-    //     content: newMessage,
-    //     role: "user",
-    //     loading: true,
-    //     error: "",
-    //   },
-    // ]);
 
     setMessages((draft) => [
       ...draft,
@@ -92,7 +81,7 @@ function App() {
               id: Date.now().toString(),
               content: receivedText,
               role: "ai",
-              loading: true,
+              loading: false,
               timestamp: formatChatGPTDateTime(),
               error: "",
             },
@@ -101,6 +90,17 @@ function App() {
       }
     } catch (error) {
       console.log(error);
+      setMessages([
+        ...messages,
+        {
+          id: Date.now().toString(),
+          content: "",
+          role: "ai",
+          loading: false,
+          timestamp: formatChatGPTDateTime(),
+          error: "",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -176,7 +176,13 @@ function App() {
             )}
           </div>
 
-          <div className="sticky bottom-0 bg-themecolor py-4">
+          <ChatInput
+            isLoading={isLoading}
+            sendMessage={sendMessage}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+          />
+          {/* <div className="sticky bottom-0 bg-themecolor py-4">
             <div className="p-1.5 bg-primary-blue/35 rounded-3xl z-50 font-mono origin-bottom animate-chat duration-400">
               <div className="pr-0.5 bg-black relative shrink-0 rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all">
                 <textarea
@@ -196,7 +202,7 @@ function App() {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
