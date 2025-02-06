@@ -1,11 +1,9 @@
 import { useState } from "react";
 import Markdown from "react-markdown";
-import sendIcon from "@/assets/images/send.svg";
 import errorIcon from "@/assets/images/error.svg";
 import userIcon from "@/assets/images/user.svg";
 import aiIcon from "@/assets/images/ai.svg";
 import { Message } from "@/models/message";
-import useAutoSize from "@/hooks/useAutoSize";
 import useAutoScroll from "./hooks/useAutoScroll";
 import Spinner from "./components/Spinner";
 import ChatInput from "./components/ChatInput";
@@ -29,13 +27,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   const scrollContentRef = useAutoScroll(isLoading);
-
-  // function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-  //   if (e.key === "Enter" && !e.shiftKey && !isLoading) {
-  //     e.preventDefault();
-  //     sendMessage();
-  //   }
-  // }
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -115,74 +106,79 @@ function App() {
           </h1>
         </header>
 
-        <div className="relative grow flex flex-col gap-6 pt-6">
-          {messages.length === 0 && (
-            <div className="mt-3 font-urbanist text-primary-blue text-xl font-light space-y-2">
-              <p>👋 Welcome!</p>
-              <p>
-                I am powered by the latest technology reports from leading
-                institutions like the World Bank, the World Economic Forum,
-                McKinsey, Deloitte and the OECD.
-              </p>
-              <p>Ask me anything about the latest technology trends.</p>
-            </div>
-          )}
-          <div ref={scrollContentRef} className="grow space-y-4">
-            {messages.map(
-              ({ id, role, content, loading, timestamp, error }) => (
-                <div
-                  key={id}
-                  className={`flex items-start gap-4 py-4 px-3 rounded-xl ${
-                    role === "user" ? "bg-primary-blue/10" : ""
-                  }`}
-                >
-                  {role === "user" ? (
-                    <img
-                      className="h-[26px] w-[26px] shrink-0"
-                      src={userIcon}
-                      alt="user"
-                    />
-                  ) : (
-                    <img
-                      className="h-[26px] w-[26px] shrink-0"
-                      src={aiIcon}
-                      alt="ai"
-                    />
-                  )}
-                  <div>
-                    <div className="markdown-container">
-                      {loading && !content ? (
-                        <Spinner />
-                      ) : role === "ai" ? (
-                        <Markdown>{content}</Markdown>
-                      ) : (
-                        <div className="whitespace-pre-line">{content}</div>
+        <main>
+          <div className="relative grow flex flex-col gap-6 pt-6">
+            {messages.length === 0 && (
+              <div className="mt-3 font-urbanist text-primary-blue text-xl font-light space-y-2">
+                <p>👋 Welcome!</p>
+                <p>
+                  I am powered by the latest technology reports from leading
+                  institutions like the World Bank, the World Economic Forum,
+                  McKinsey, Deloitte and the OECD.
+                </p>
+                <p>Ask me anything about the latest technology trends.</p>
+              </div>
+            )}
+            <div ref={scrollContentRef} className="grow space-y-4">
+              {messages.map(
+                ({ id, role, content, loading, timestamp, error }) => (
+                  <div
+                    key={id}
+                    className={`flex items-start gap-4 py-4 px-3 rounded-xl ${
+                      role === "user" ? "bg-primary-blue/10" : ""
+                    }`}
+                  >
+                    {role === "user" ? (
+                      <img
+                        className="h-[26px] w-[26px] shrink-0"
+                        src={userIcon}
+                        alt="user"
+                      />
+                    ) : (
+                      <img
+                        className="h-[26px] w-[26px] shrink-0"
+                        src={aiIcon}
+                        alt="ai"
+                      />
+                    )}
+                    <div>
+                      <div className="markdown-container">
+                        {loading && !content ? (
+                          <Spinner />
+                        ) : role === "ai" ? (
+                          <Markdown>{content}</Markdown>
+                        ) : (
+                          <div className="whitespace-pre-line">{content}</div>
+                        )}
+                      </div>
+                      <div className="text-gray-500 text-sm">{timestamp}</div>
+                      {error && (
+                        <div
+                          className={`flex items-center gap-1 text-sm text-error-red ${
+                            content && "mt-2"
+                          }`}
+                        >
+                          <img
+                            className="h-5 w-5"
+                            src={errorIcon}
+                            alt="error"
+                          />
+                          <span>Error generating the response</span>
+                        </div>
                       )}
                     </div>
-                    <div className="text-gray-500 text-sm">{timestamp}</div>
-                    {error && (
-                      <div
-                        className={`flex items-center gap-1 text-sm text-error-red ${
-                          content && "mt-2"
-                        }`}
-                      >
-                        <img className="h-5 w-5" src={errorIcon} alt="error" />
-                        <span>Error generating the response</span>
-                      </div>
-                    )}
                   </div>
-                </div>
-              )
-            )}
-          </div>
+                )
+              )}
+            </div>
 
-          <ChatInput
-            isLoading={isLoading}
-            sendMessage={sendMessage}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-          />
-          {/* <div className="sticky bottom-0 bg-themecolor py-4">
+            <ChatInput
+              isLoading={isLoading}
+              sendMessage={sendMessage}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+            />
+            {/* <div className="sticky bottom-0 bg-themecolor py-4">
             <div className="p-1.5 bg-primary-blue/35 rounded-3xl z-50 font-mono origin-bottom animate-chat duration-400">
               <div className="pr-0.5 bg-black relative shrink-0 rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all">
                 <textarea
@@ -203,7 +199,9 @@ function App() {
               </div>
             </div>
           </div> */}
-        </div>
+          </div>
+        </main>
+        
       </div>
     </>
   );
