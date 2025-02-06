@@ -40,10 +40,10 @@ const Main = () => {
               {/* <img src="/images/asset 10.svg" alt="btn-img" /> */}
             </button>
           </div>
-          <p className="text-xs text-white p-2 text-center">
+          {/* <p className="text-xs text-white p-2 text-center">
             ChatGPT clone can make mistakes. Consider checking important
             information.
-          </p>
+          </p> */}
         </div>
       </div>
     </div>
