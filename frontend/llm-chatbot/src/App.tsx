@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "@/models/message";
 import ChatInput from "./components/ChatInput";
 import ChatMessage from "./components/ChatMessage";
@@ -17,11 +17,29 @@ function formatChatGPTDateTime(): string {
 }
 
 function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome-message",
+      content: `# 👋 Welcome! 
+I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI is running with Ollama, using the Deepseek-R1 model. Ask me anything about the latest technology trends, and I'll do my best to assist you!`,
+      role: "ai",
+      loading: false,
+      timestamp: formatChatGPTDateTime(),
+      error: "",
+    },
+  ]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // const scrollContentRef = useAutoScroll(isLoading);
+  // Ref for the messages container
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); // Trigger when `messages` changes
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -84,7 +102,7 @@ function App() {
           role: "ai",
           loading: false,
           timestamp: formatChatGPTDateTime(),
-          error: "",
+          error: `Error when process request. Details: ${error}`,
         },
       ]);
     } finally {
@@ -94,21 +112,27 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen w-full max-w-3xl mx-auto px-4">
-        <header className="sticky top-0 shrink-0 z-20 bg-themecolor">
+      <div className="flex flex-col min-h-screen max-h-screen w-full max-w-6xl mx-auto px-4">
+        <header className="sticky top-0 shrink-0 z-20 bg-themecolor py-4 px-4 my-4">
           <h1 className="font-urbanist text-[1.65rem] font-semibold text-center">
             AI Chatbot
           </h1>
         </header>
 
-        <ChatMessage isLoading={isLoading} messages={messages} />
+        <div className="flex-1 overflow-y-auto px-4 py-4 my-4 border border-gray-300 rounded-lg">
+          <ChatMessage isLoading={isLoading} messages={messages} />
+          {/* Empty div to scroll into view */}
+          <div ref={messagesEndRef} />
+        </div>
 
-        <ChatInput
-          isLoading={isLoading}
-          sendMessage={sendMessage}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-        />
+        <div className="sticky bottom-0 bg-themecolor">
+          <ChatInput
+            isLoading={isLoading}
+            sendMessage={sendMessage}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+          />
+        </div>
       </div>
     </>
   );
