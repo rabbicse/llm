@@ -119,7 +119,7 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
           </h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 my-4 border border-gray-300 rounded-lg">
+        <div className="flex-1 overflow-y-auto px-4 py-4 my-4">
           <ChatMessage isLoading={isLoading} messages={messages} />
           {/* Empty div to scroll into view */}
           <div ref={messagesEndRef} />
