@@ -5,6 +5,7 @@ import Spinner from "@/components/Spinner";
 import Markdown from "react-markdown";
 // import useAutoScroll from "@/hooks/useAutoScroll";
 import { Message } from "@/models/message";
+import { useEffect, useRef } from "react";
 
 interface ChatMessageProps {
   isLoading: boolean;
@@ -12,15 +13,18 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isLoading, messages }) => {
-  // const scrollContentRef = useAutoScroll(isLoading);
+  // Ref for the messages container
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); // Trigger when `messages` changes
 
   return (
-    <div
-      // ref={scrollContentRef}
-      // className="h-full overflow-y-auto space-y-4"
-      // className="grow space-y-4"
-      // className="flex-1 overflow-y-auto mt-4 mb-4 border border-gray-300 rounded-lg p-4"
-    >
+    <div className="flex-1 overflow-y-auto px-4 py-4 my-4">
       {messages.length === 0 && (
         <div className="mt-3 font-urbanist text-primary-blue text-xl font-light space-y-2">
           <p>👋 Welcome!</p>
@@ -81,6 +85,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isLoading, messages }) => {
           </div>
         ))}
       </div>
+
+      <div ref={messagesEndRef} />
     </div>
   );
 };

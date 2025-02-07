@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Message } from "@/models/message";
-import ChatInput from "./components/ChatInput";
-import ChatMessage from "./components/ChatMessage";
+import ChatInput from "@/components/ChatInput";
+import ChatMessage from "@/components/ChatMessage";
 
 function formatChatGPTDateTime(): string {
   const now = new Date();
@@ -30,16 +30,6 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
   ]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  // Ref for the messages container
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-  // Scroll to bottom whenever messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]); // Trigger when `messages` changes
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -85,7 +75,7 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
               id: Date.now().toString(),
               content: receivedText,
               role: "ai",
-              loading: false,
+              loading: true,
               timestamp: formatChatGPTDateTime(),
               error: "",
             },
@@ -119,20 +109,15 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
           </h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 my-4">
-          <ChatMessage isLoading={isLoading} messages={messages} />
-          {/* Empty div to scroll into view */}
-          <div ref={messagesEndRef} />
-        </div>
+        
+        <ChatMessage isLoading={isLoading} messages={messages} />
 
-        <div className="sticky bottom-0 bg-themecolor">
-          <ChatInput
-            isLoading={isLoading}
-            sendMessage={sendMessage}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-          />
-        </div>
+        <ChatInput
+          isLoading={isLoading}
+          sendMessage={sendMessage}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+        />
       </div>
     </>
   );
