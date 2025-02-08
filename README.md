@@ -1,7 +1,6 @@
-# Large Language Models (llm)
- Description:  This repository contains a LLM-powered application built with React (Vite) for the frontend and Spring Boot with Spring AI for the backend. It integrates Ollama and DeepSeek-R1 to provide seamless AI-driven functionality. The project is designed for efficient, scalable, and high-performance AI interactions.
+# Large Language Models (LLM)
 
-# 🚀 LLM-Powered App with React, Vite, Spring Boot, and Spring AI  
+## 🚀 LLM-Powered App with React, Vite, Spring Boot, and Spring AI  
 
 This repository contains a **LLM-powered application** built with **React (Vite) for the frontend** and **Spring Boot with Spring AI** for the backend. It integrates **Ollama** and **DeepSeek-R1** to provide seamless AI-driven functionality. The project is designed for efficient, scalable, and high-performance AI interactions.  
 
@@ -37,15 +36,18 @@ Then run the following command to serve it with default port.
 ```
 ollama serve
 ```
+It should run on default port: `11434`
 
-Note: For more configuration like serve as a remote server I'll show the steps later. Stay tuned!!!
+Note: For more configurations like serve as a remote server I'll show the steps later. Stay tuned!!!
 
+### Create REST api with Spring Boot and Spring AI
+Now we need to create an api to interact with ollama LLM server. In our case we are going to create spring boot application. 
+- Go to `https://start.spring.io`
+- Configure Java runtime for an example JDK version, Spring Boot version etc., Set Language Java and build tool as Maven. Update Project metadata.
+- Click Add Dependencies, search `web` and add `Spring Web`. Then search `ollama` and add `Ollama`
+- Then click on Generate
+- Finally download it on your machine, open it with your editor, update source mto interact with ollama and run it.
 
-
-### Setup Instructions  
-
-#### 1️⃣ Clone the Repository  
-```bash
-git clone https://github.com/rabbicse/llm.git
-cd your-repo
-```
+### Create React project for frontend
+I have created separate readme for frontend development with `react` and `vite`. You can choose any other framework but basic mechanisms are simillar.
+[Frontend Development](https://github.com/rabbicse/llm/tree/master/frontend)
