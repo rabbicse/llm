@@ -20,10 +20,27 @@ This repository contains a **LLM-powered application** built with **React (Vite)
 
 ### Prerequisites  
 Ensure you have the following installed:  
-- Node.js & npm  
-- Java 17+  
 - Ollama installed and running  
-- DeepSeek-R1 model available  
+- DeepSeek-R1 model available
+- Java 17+    
+- Node.js & npm
+
+### Install and serve Ollama
+Go to `https://ollama.com` and click download button, it'll redirect to download page `https://ollama.com/download`. Download based on your operating system and install it on your system.
+
+Then go to `models` section, We can get all available models for ollama platform at `https://ollama.com/search`. Click on `deepseek-r1` section for an example. From dropdown select your desired tag. For an example of tag `1.5`. Then copy the run command, for an example `ollama run deepseek-r1:1.5b` replace **run** command with **pull** command and run it on your terminal.
+```
+ollama pull deepseek-r1:1.5b
+```
+
+Then run the following command to serve it with default port.
+```
+ollama serve
+```
+
+Note: For more configuration like serve as a remote server I'll show the steps later. Stay tuned!!!
+
+
 
 ### Setup Instructions  
 
