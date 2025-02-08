@@ -1,5 +1,5 @@
-import sendIcon from "@/assets/images/send.svg";
 import useAutoSize from "@/hooks/useAutoSize";
+import { ArrowUpIcon } from "./icons";
 import React from "react";
 
 interface ChatInputProps {
@@ -39,8 +39,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
             className="absolute top-1/2 -translate-y-1/2 right-3 p-1 rounded-md hover:bg-primary-blue/20"
             onClick={sendMessage}
           >
-            <img src={sendIcon} alt="send" />
+            {/* <img src={sendIcon} alt="send" /> */}
+            <ArrowUpIcon />
           </button>
+          {/* <button className="rounded-full p-1.5 h-fit border dark:border-zinc-600">
+            
+          </button> */}
         </div>
       </div>
     </div>

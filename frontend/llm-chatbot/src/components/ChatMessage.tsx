@@ -3,16 +3,14 @@ import errorIcon from "@/assets/images/error.svg";
 import aiIcon from "@/assets/images/artificial-intelligence.svg";
 import Spinner from "@/components/Spinner";
 import Markdown from "react-markdown";
-// import useAutoScroll from "@/hooks/useAutoScroll";
 import { Message } from "@/models/message";
 import { useEffect, useRef } from "react";
 
 interface ChatMessageProps {
-  isLoading: boolean;
   messages: Message[];
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isLoading, messages }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ messages }) => {
   // Ref for the messages container
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 

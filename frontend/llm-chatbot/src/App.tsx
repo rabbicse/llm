@@ -110,7 +110,7 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
         </header>
 
         
-        <ChatMessage isLoading={isLoading} messages={messages} />
+        <ChatMessage messages={messages} />
 
         <ChatInput
           isLoading={isLoading}
