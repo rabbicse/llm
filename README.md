@@ -4,6 +4,8 @@
 
 This repository contains a **LLM-powered application** built with **React (Vite) for the frontend** and **Spring Boot with Spring AI** for the backend. It integrates **Ollama** and **DeepSeek-R1** to provide seamless AI-driven functionality. The project is designed for efficient, scalable, and high-performance AI interactions.  
 
+![ai-chatbot](screenshots/chatbot-ui.png, "AI Chatbot with Ollama Deepseek-R1, Spring Boot and React!")
+
 ## 🛠️ Tech Stack  
 - **Frontend:** React + Vite ⚡  
 - **Backend:** Spring Boot + Spring AI ☕  
