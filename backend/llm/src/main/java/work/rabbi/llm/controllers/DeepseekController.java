@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/v1/llm/")
+@RequestMapping("/api/llm/")
 @CrossOrigin(origins = "*")
 public class DeepseekController {
     private final ChatClient chatClient;

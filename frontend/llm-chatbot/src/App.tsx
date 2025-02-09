@@ -17,6 +17,7 @@ function formatChatGPTDateTime(): string {
 }
 
 function App() {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome-message",
@@ -57,9 +58,7 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
     setNewMessage("");
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/v1/llm/stream/${newMessage}`
-      );
+      const response = await fetch(`${apiUrl}/${newMessage}`);
 
       if (response.ok && response.body != null) {
         const reader = response.body.getReader();
@@ -109,7 +108,6 @@ I am an AI chatbot powered by a Java Spring Boot and Spring AI backend. The AI i
           </h1>
         </header>
 
-        
         <ChatMessage messages={messages} />
 
         <ChatInput
