@@ -40,14 +40,17 @@ It should run on default port: `11434`
 
 Note: For more configurations like serve as a remote server I'll show the steps later. Stay tuned!!!
 
-### Create REST api with Spring Boot and Spring AI
-Now we need to create an api to interact with ollama LLM server. In our case we are going to create spring boot application. 
-- Go to `https://start.spring.io`
-- Configure Java runtime for an example JDK version, Spring Boot version etc., Set Language Java and build tool as Maven. Update Project metadata.
-- Click Add Dependencies, search `web` and add `Spring Web`. Then search `ollama` and add `Ollama`
-- Then click on Generate
-- Finally download it on your machine, open it with your editor, update source mto interact with ollama and run it.
+### REST API Backend
+I have created separate readme for backend development with Spring Boot. You can choose any other language or framework but basic mechanisms are simillar.
+[Backend Development](https://github.com/rabbicse/llm/tree/master/backend)
 
 ### Create React project for frontend
 I have created separate readme for frontend development with `react` and `vite`. You can choose any other framework but basic mechanisms are simillar.
 [Frontend Development](https://github.com/rabbicse/llm/tree/master/frontend)
+
+## References
+- [https://ollama.com](https://ollama.com)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [React](https://react.dev)
+- [Vite](https://vite.dev)
+- [Frontend Github Project](https://github.com/ruizguille/tech-trends-chatbot/tree/master/frontend)
