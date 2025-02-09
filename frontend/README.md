@@ -1,6 +1,14 @@
-# Frontend Installation Guide
+# 🚀 AI Chatbot Frontend (React + Vite)  
 
-## Install Vite with react
+This is the **frontend** for the AI chatbot built using **React**, **Vite**, and **Tailwind CSS**. It interacts with the **Spring Boot** backend that connects to the **Ollama LLM server**.  
+
+## 📌 Features  
+✅ Built with **React + Vite** for fast performance  
+✅ Uses Typescript for better code readability 
+✅ Simple and clean UI for chat interactions  
+✅ Fully responsive design with **Tailwind CSS**  
+
+## 🛠️ Getting Started  
 To install vite with react write the following command.
 ```bash
 npm create vite@latest
@@ -263,3 +271,29 @@ Some packages may fail to install due to peer dependency issues in npm (see http
 
 Success! Project initialization completed.
 ```
+
+---
+
+## 🔥 Deployment  
+To build the production-ready version:  
+```sh
+npm run build
+```
+Then serve it using:  
+```sh
+npm run dev
+```
+
+---
+
+## 📌 Resources  
+- React: [https://react.dev](https://react.dev)
+- Vite: [https://vite.dev](https://vite.dev)
+- Tailwind CSS: [https://tailwindcss.com](https://tailwindcss.com)
+- Shadcn UI: [https://ui.shadcn.com](https://ui.shadcn.com)
+- Full Project: [github.com/rabbicse/llm](https://github.com/rabbicse/llm)  
+
+---
+
+Enjoy building! 🚀💡  
+#React #Vite #AI #Chatbot #SpringBoot #Ollama #FrontendDevelopment
