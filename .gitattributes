@@ -2,6 +2,8 @@
 *.py linguist-detectable=true
 *.js linguist-detectable=true
 *.ts linguist-detectable=true
+*.html linguist-detectable=false
+*.css linguist-detectable=false
 *.json linguist-detectable=false
 *.jpg linguist-detectable=false
 *.png linguist-detectable=false
