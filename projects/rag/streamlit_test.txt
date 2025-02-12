@@ -1,0 +1,31 @@
+import streamlit as st
+import os
+import main  # Import correctly
+
+st.title("Chat with PDFs with Deepseek")
+
+uploaded_file = st.file_uploader("Upload PDF", type="pdf", accept_multiple_files=False)
+
+if uploaded_file is not None:
+    # Save uploaded file
+    pdfs_directory = "uploads"  # Define a storage directory
+    os.makedirs(pdfs_directory, exist_ok=True)  # Ensure the directory exists
+    file_path = os.path.join(pdfs_directory, uploaded_file.name)
+
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())  # Save the uploaded file
+
+    st.write(f"✅ Uploaded: {uploaded_file.name}")  # Debugging message
+
+    # Process PDF
+    main.upload_pdf(file_path)  # Pass actual file path
+    db = main.create_vector_store(file_path)
+
+    # Chat input
+    question = st.chat_input()
+
+    if question:
+        st.chat_message("user").write(question)
+        related_documents = main.retrieve_docs(db, question)
+        answer = main.question_pdf(question, related_documents)
+        st.chat_message("assistant").write(answer)

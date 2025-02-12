@@ -22,7 +22,7 @@ doc_splits = text_splitter.split_documents(docs_list)
 from langchain_community.vectorstores import SKLearnVectorStore
 from langchain.embeddings import OllamaEmbeddings
 
-embedding_model = OllamaEmbeddings(model="mistral")  # Use any local Ollama model
+embedding_model = OllamaEmbeddings(model="deepseek-r1:1.5b")  # Use any local Ollama model
 
 vectorstore = SKLearnVectorStore.from_documents(
     documents=doc_splits,
