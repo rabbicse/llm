@@ -40,3 +40,4 @@ pip install fastapi
 
 ## References
 - [RAG with LLaMA Using Ollama](https://medium.com/@danushidk507/rag-with-llama-using-ollama-a-deep-dive-into-retrieval-augmented-generation-c58b9a1cfcd3)
+- [RAG with OLLAMA](https://dev.to/mohsin_rashid_13537f11a91/rag-with-ollama-1049)
