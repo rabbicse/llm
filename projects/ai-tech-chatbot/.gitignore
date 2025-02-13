@@ -174,3 +174,4 @@ cython_debug/
 .pypirc
 
 .idea/
+faiss_index_/
