@@ -37,6 +37,8 @@ class OllamaService:
         # Retrieve relevant documents
         documents = self.retrieve_docs(question)
 
+        print(documents)
+
         # If no documents are found, return "I don't know"
         if not documents:
             yield "I don't know."
@@ -63,6 +65,8 @@ class OllamaService:
         # Yield chunks in real-time
         for chunk in response:
             yield chunk
+
+        print('done!')
 
     def prompt(self, question: str):
         # Test with a sample prompt
