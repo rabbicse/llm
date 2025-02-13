@@ -1,8 +1,13 @@
+from itertools import chain
+
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import FAISS
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.llms.ollama import Ollama
+
+from data_ingestion import llm_config
 from data_ingestion.document_parser import DocumentParser
+from langchain.prompts import ChatPromptTemplate
 
 
 class OllamaService:
@@ -22,33 +27,42 @@ class OllamaService:
         # Save and reload the vector store
         vector_store.save_local("faiss_index_")
 
-    def retrieve_docs(self, db, query, k=4):
-        print(db.similarity_search(query))
-        return db.similarity_search(query, k)
-
-    def ask(self, question: str):
+    def retrieve_docs(self, query: str, k: int = 4):
         persisted_vectorstore = FAISS.load_local("faiss_index_",
                                                  self.embed_model,
                                                  allow_dangerous_deserialization=True)
+        return persisted_vectorstore.similarity_search(query, k)
 
-        # Create a retriever
-        retriever = persisted_vectorstore.as_retriever()
+    def ask(self, question: str):
+        # Retrieve relevant documents
+        documents = self.retrieve_docs(question)
 
-        # Create RetrievalQA
-        qa = RetrievalQA.from_chain_type(llm=self.llm,
-                                         chain_type="stuff",
-                                         retriever=retriever)
+        # If no documents are found, return "I don't know"
+        if not documents:
+            yield "I don't know."
+            return
 
-        response = qa.invoke({"query": question})
+        context = "\n\n".join([doc.page_content for doc in documents])
 
-        for chunk in response["result"]:
+        # Create a prompt template
+        template = """
+        You are a helpful assistant. Use the following context to answer the question.
+        If the context is not relevant or does not contain enough information, say "I don't know."
+
+        Context: {context}
+
+        Question: {question}
+
+        Answer:
+        """
+        prompt = ChatPromptTemplate.from_template(template=template)
+
+        # Stream the response using the LLM
+        response = self.llm.stream(prompt.format(context=context, question=question))
+
+        # Yield chunks in real-time
+        for chunk in response:
             yield chunk
-
-        # context = "\n\n".join([doc.page_content for doc in documents])
-        # prompt = ChatPromptTemplate.from_template(llm_config.TEMPLATE)
-        # chain = prompt | self.embed_model
-        #
-        # return chain.invoke({"question": question, "context": context})
 
     def prompt(self, question: str):
         # Test with a sample prompt

@@ -3,7 +3,7 @@ import json
 import requests
 
 url = "http://localhost:5001/query/stream"
-message = "Describe sliding window"
+message = "Describe libaration war of bangladesh"
 data = {"query": message}
 
 headers = {"Content-type": "application/json",
@@ -11,4 +11,4 @@ headers = {"Content-type": "application/json",
 
 with requests.post(url, data=json.dumps(data), headers=headers, stream=True) as r:
     for chunk in r.iter_content(256):
-        print(chunk)
+        print(chunk.decode("utf-8") if isinstance(chunk, bytes) else chunk, end='')
