@@ -3,7 +3,7 @@ import json
 import requests
 
 url = "http://localhost:5001/query/stream"
-message = "Describe libaration war in bangladesh?"
+message = "Describe two pointer?"
 data = {"query": message}
 
 headers = {"Content-type": "application/json",
