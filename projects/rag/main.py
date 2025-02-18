@@ -6,11 +6,11 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 
-pdfs_directory = 'pdfs/'
+pdfs_directory = 'uploads/'
 
-embeddings = OllamaEmbeddings(model="deepseek-r1:1.5b")
+embeddings = OllamaEmbeddings(model="deepseek-r1:1.5b", base_url='http://192.168.97.67:11434')
 
-model = OllamaLLM(model="deepseek-r1:1.5b")
+model = OllamaLLM(model="deepseek-r1:1.5b", base_url='http://192.168.97.67:11434')
 
 template = """
 You are an assistant that answers questions. Using the following retrieved information, answer the user question. If you don't know the answer, say that you don't know. Use up to three sentences, keeping the answer concise.

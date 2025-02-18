@@ -1,12 +1,12 @@
 'use client';
 
-import type {
-  Attachment,
-  ChatRequestOptions,
-  CreateMessage,
-  Message,
-} from 'ai';
-import cx from 'classnames';
+// import type {
+//   Attachment,
+//   ChatRequestOptions,
+//   CreateMessage,
+//   Message,
+// } from 'ai';
+// import cx from 'classnames';
 import type React from 'react';
 import {
   useRef,

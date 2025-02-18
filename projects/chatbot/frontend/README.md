@@ -83,6 +83,12 @@ Then go to `https://ui.shadcn.com/docs/installation/next` to check the shadcn in
 npx shadcn@latest init
 ```
 
+For React 19+ and Nextjs 15+ use the following command
+
+```shell
+npx shadcn@canary init
+```
+
 2. You will be asked a few questions to configure `components.json`:
 
 ```shell
@@ -112,6 +118,34 @@ Some packages may fail to install due to peer dependency issues in npm (see http
 ✔ Installing dependencies.
 ✔ Created 1 file:
   - src/lib/utils.ts
+
+Success! Project initialization completed.
+You may now add components.
+```
+
+For React 19 and Nextjs 15+
+```shell
+❯ npx shadcn@canary init
+✔ Preflight checks.
+✔ Verifying framework. Found Next.js.
+✔ Validating Tailwind CSS.
+✔ Validating import alias.
+√ Which style would you like to use? » New York (Recommended)
+√ Which color would you like to use as the base color? » Zinc
+√ Would you like to use CSS variables for theming? ... no / yes
+✔ Writing components.json.
+✔ Checking registry.
+✔ Updating tailwind.config.ts
+✔ Updating src\app\globals.css
+  Installing dependencies.
+
+It looks like you are using React 19.
+Some packages may fail to install due to peer dependency issues in npm (see https://ui.shadcn.com/react-19).
+
+√ How would you like to proceed? » Use --legacy-peer-deps
+✔ Installing dependencies.
+✔ Created 1 file:
+  - src\lib\utils.ts
 
 Success! Project initialization completed.
 You may now add components.
@@ -303,4 +337,116 @@ Update `global.css` file as the following snippet.
 ### sonner
 ```shell
 npm install sonner
+```
+### usehooks-ts
+```shell
+npm install usehooks-ts
+```
+
+### remark-gfm 
+```shell
+npm install remark-gfm
+```
+
+### react-markdown
+```shell
+npm install react-markdown
+```
+
+### react-data-grid
+```shell
+npm install react-data-grid
+```
+
+### papaparse
+```shell
+npm install papaparse
+npm install --save-dev @types/papaparse
+```
+
+### next-themes
+```shell
+npm install next-themes
+```
+
+### prosemirror-view
+```shell
+npm install prosemirror-view
+```
+
+### prosemirror-inputrules
+```shell
+npm install prosemirror-inputrules
+```
+
+### prosemirror-example-setup
+```shell
+npm install prosemirror-example-setup
+```
+
+### npm install prosemirror-markdown
+```shell
+npm install prosemirror-markdown
+```
+
+### prosemirror-schema-basic
+```shell
+npm install prosemirror-schema-basic
+```
+
+### framer-motion
+```shell
+npm install framer-motion
+```
+
+### date-fns
+```shell
+npm install date-fns
+```
+
+### codemirror
+```shell
+npm install codemirror
+```
+
+### classnames
+```shell
+npm install classnames
+```
+
+### @codemirror/theme-one-dark
+```shell
+npm install @codemirror/theme-one-dark
+```
+
+### @codemirror/lang-python
+```shell
+npm install @codemirror/lang-python
+```
+
+### bcrypt-ts
+```shell
+npm install bcrypt-ts
+```
+
+### postgres
+```shell
+npm install postgres
+```
+
+### next-auth
+```shell
+npm install next-auth
+```
+
+## @ai-sdk
+```shell
+npm install @ai-sdk/fireworks
+npm install @ai-sdk/openai
+```
+
+## Shadcn-ui
+Add the following components.
+```shell
+npx shadcn@canary add button
 ```
