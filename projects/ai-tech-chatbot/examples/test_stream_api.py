@@ -3,7 +3,7 @@ import json
 import requests
 
 url = "http://localhost:5001/query/stream"
-message = "Describe two pointer?"
+message = "What are database joins available for postgres?"
 data = {"query": message}
 
 headers = {"Content-type": "application/json",

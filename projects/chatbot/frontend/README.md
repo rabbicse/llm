@@ -338,6 +338,7 @@ Update `global.css` file as the following snippet.
 ```shell
 npm install sonner
 ```
+
 ### usehooks-ts
 ```shell
 npm install usehooks-ts
@@ -448,5 +449,22 @@ npm install @ai-sdk/openai
 ## Shadcn-ui
 Add the following components.
 ```shell
-npx shadcn@canary add button
+npx shadcn@latest add alert-dialog
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dropdown-menu
+npx shadcn@latest add input
+npx shadcn@latest add label
+npx shadcn@latest add select
+npx shadcn@latest add separator
+npx shadcn@latest add sheet
+npx shadcn@latest add sidebar
+npx shadcn@latest add skeleton
+npx shadcn@latest add textarea
+npx shadcn@latest add tooltip
+```
+
+### Add `ai` package
+```shell
+npm install ai
 ```
