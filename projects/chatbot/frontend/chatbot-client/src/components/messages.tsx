@@ -70,7 +70,7 @@ function PureMessages({
 }
 
 export const Messages = memo(PureMessages, (prevProps, nextProps) => {
-    if (prevProps.isArtifactVisible && nextProps.isArtifactVisible) return true;
+    // if (prevProps.isArtifactVisible && nextProps.isArtifactVisible) return true;
 
     if (prevProps.isLoading !== nextProps.isLoading) return false;
     if (prevProps.isLoading && nextProps.isLoading) return false;

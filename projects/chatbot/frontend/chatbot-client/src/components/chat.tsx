@@ -15,8 +15,6 @@ import { ChatHeader } from '@/components/chat-header';
 import { MultimodalInput } from "@/components/multimodal-input";
 import { Messages } from "@/components/messages";
 import { generateUUID } from "@/lib/utils";
-// import { VisibilityType } from './visibility-selector';
-// import { useArtifactSelector } from '@/hooks/use-artifact';
 
 export function Chat({
   id,
@@ -80,10 +78,23 @@ export function Chat({
     };
 
     // Set messages before request to AI
-    setMessages((draft) => [
-      ...draft,
-      newMessage,
-      newAiMessage]);
+    setMessages((draft) => {
+      console.log(draft);
+      return [
+        ...draft,
+        newMessage];
+    });
+
+    console.log(messages);
+
+    setMessages((draft) => {
+      console.log(draft);
+      return [
+        ...draft,
+        newAiMessage];
+    });        
+
+    console.log(messages);
 
     setTextInput("");
     setAttachments([]);
@@ -98,7 +109,7 @@ export function Chat({
         body: JSON.stringify({ query: textInput.trim() }),
       });
 
-      setIsLoading(false);
+
 
       if (response.ok && response.body != null) {
         const reader = response.body.getReader();
@@ -123,7 +134,7 @@ export function Chat({
       setMessages([
         ...messages,
         {
-          id: Date.now().toString(),
+          id: generateUUID(),
           content: "",
           role: "assistant"
         },

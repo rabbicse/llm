@@ -13,6 +13,17 @@ version = "v1"
 app = FastAPI(version=version,
               title='REST API with Ollama and Deepseek')
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 ai_service = OllamaService()
 
 
