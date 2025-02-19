@@ -9,7 +9,7 @@ import type {
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-import { ChatHeader } from '@/components/chat-header';
+import { ChatHeader } from "@/components/chat-header";
 
 // import { Artifact } from './artifact';
 import { MultimodalInput } from "@/components/multimodal-input";
@@ -29,7 +29,7 @@ export function Chat({
   //   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
 }) {
-  const apiUrl = "http://localhost:8000/chat/stream";//process.env.NEXT_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL; // "http://localhost:8000/chat/stream"; //process.env.API_URL;
   const { mutate } = useSWRConfig();
   const [textInput, setTextInput] = useState<string>("");
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
@@ -49,12 +49,9 @@ export function Chat({
       createdAt: message.createdAt ?? new Date(), // Ensure valid Date
     };
 
-    setMessages((draft) => [
-      ...draft,
-      newMessage]); // Append safely
+    setMessages((draft) => [...draft, newMessage]); // Append safely
     return newMessage.id;
   };
-
 
   // Function to handle form submit operation
   const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
@@ -63,7 +60,6 @@ export function Chat({
     if (!textInput.trim() && attachments.length === 0) return;
 
     setIsLoading(true);
-
 
     const newMessage: Message = {
       id: generateUUID(),
@@ -80,25 +76,16 @@ export function Chat({
     // Set messages before request to AI
     setMessages((draft) => {
       console.log(draft);
-      return [
-        ...draft,
-        newMessage];
+      return [...draft, newMessage];
     });
-
-    console.log(messages);
 
     setMessages((draft) => {
       console.log(draft);
-      return [
-        ...draft,
-        newAiMessage];
-    });        
-
-    console.log(messages);
+      return [...draft, newAiMessage];
+    });
 
     setTextInput("");
     setAttachments([]);
-
 
     try {
       const response = await fetch(`${apiUrl}`, {
@@ -108,8 +95,6 @@ export function Chat({
         },
         body: JSON.stringify({ query: textInput.trim() }),
       });
-
-
 
       if (response.ok && response.body != null) {
         const reader = response.body.getReader();
@@ -136,7 +121,7 @@ export function Chat({
         {
           id: generateUUID(),
           content: "",
-          role: "assistant"
+          role: "assistant",
         },
       ]);
     } finally {
@@ -145,12 +130,19 @@ export function Chat({
   };
 
   // Define reload function
-  const reload = async (chatRequestOptions?: ChatRequestOptions): Promise<string | null | undefined> => {
+  const reload = async (
+    chatRequestOptions?: ChatRequestOptions
+  ): Promise<string | null | undefined> => {
     setIsLoading(true);
     try {
       // Simulate fetching new messages
       const newMessages: Message[] = [
-        { id: "1", content: "New message", role: "assistant", createdAt: new Date() },
+        {
+          id: "1",
+          content: "New message",
+          role: "assistant",
+          createdAt: new Date(),
+        },
       ];
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
 
@@ -176,7 +168,6 @@ export function Chat({
         <Messages
           chatId={id}
           isLoading={isLoading}
-          // votes={votes}
           messages={messages}
           setMessages={setMessages}
           reload={reload}

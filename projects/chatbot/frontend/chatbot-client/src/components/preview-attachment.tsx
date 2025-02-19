@@ -1,3 +1,5 @@
+"use client";
+
 import type { Attachment } from "ai";
 
 import { LoaderIcon } from "./icons";
