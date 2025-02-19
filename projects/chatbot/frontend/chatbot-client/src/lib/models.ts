@@ -1,0 +1,1 @@
+export const DEFAULT_CHAT_MODEL: string = 'deepseek-r1:1.5b';

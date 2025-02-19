@@ -5,31 +5,31 @@ import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
 
-import type { Vote } from '@/lib/db/schema';
+// import type { Vote } from '@/lib/db/schema';
 
-import { DocumentToolCall, DocumentToolResult } from './document';
+// import { DocumentToolCall, DocumentToolResult } from './document';
 import {
   ChevronDownIcon,
   LoaderIcon,
   PencilEditIcon,
   SparklesIcon,
 } from './icons';
-import { Markdown } from './markdown';
-import { MessageActions } from './message-actions';
+import { Markdown } from '@/components/markdown';
+// import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
-import { Weather } from './weather';
+// import { Weather } from './weather';
 import equal from 'fast-deep-equal';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-import { MessageEditor } from './message-editor';
-import { DocumentPreview } from './document-preview';
-import { MessageReasoning } from './message-reasoning';
+// import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+// import { MessageEditor } from './message-editor';
+// import { DocumentPreview } from './document-preview';
+// import { MessageReasoning } from './message-reasoning';
 
 const PurePreviewMessage = ({
   chatId,
   message,
-  vote,
+  // vote,
   isLoading,
   setMessages,
   reload,
@@ -37,7 +37,7 @@ const PurePreviewMessage = ({
 }: {
   chatId: string;
   message: Message;
-  vote: Vote | undefined;
+  // vote: Vote | undefined;
   isLoading: boolean;
   setMessages: (
     messages: Message[] | ((messages: Message[]) => Message[]),
@@ -86,7 +86,7 @@ const PurePreviewMessage = ({
               </div>
             )}
 
-            {message.reasoning && (
+            {/* {message.reasoning && (
               <MessageReasoning
                 isLoading={isLoading}
                 reasoning={message.reasoning}
@@ -110,44 +110,44 @@ const PurePreviewMessage = ({
                     </TooltipTrigger>
                     <TooltipContent>Edit message</TooltipContent>
                   </Tooltip>
-                )}
+                )} */}
 
-                <div
-                  className={cn('flex flex-col gap-4', {
-                    'bg-primary text-primary-foreground px-3 py-2 rounded-xl':
-                      message.role === 'user',
-                  })}
-                >
-                  <Markdown>{message.content as string}</Markdown>
-                </div>
-              </div>
-            )}
+            <div
+              className={cn('flex flex-col gap-4', {
+                'bg-primary text-primary-foreground px-3 py-2 rounded-xl':
+                  message.role === 'user',
+              })}
+            >
+              <Markdown>{message.content as string}</Markdown>
+            </div>
+          </div>
+          {/* )} */}
 
-            {message.content && mode === 'edit' && (
-              <div className="flex flex-row gap-2 items-start">
-                <div className="size-8" />
+          {message.content && mode === 'edit' && (
+            <div className="flex flex-row gap-2 items-start">
+              <div className="size-8" />
 
-                <MessageEditor
-                  key={message.id}
-                  message={message}
-                  setMode={setMode}
-                  setMessages={setMessages}
-                  reload={reload}
-                />
-              </div>
-            )}
+              {/* <MessageEditor
+                key={message.id}
+                message={message}
+                setMode={setMode}
+                setMessages={setMessages}
+                reload={reload}
+              /> */}
+            </div>
+          )}
 
-            {message.toolInvocations && message.toolInvocations.length > 0 && (
-              <div className="flex flex-col gap-4">
-                {message.toolInvocations.map((toolInvocation) => {
-                  const { toolName, toolCallId, state, args } = toolInvocation;
+          {message.toolInvocations && message.toolInvocations.length > 0 && (
+            <div className="flex flex-col gap-4">
+              {message.toolInvocations.map((toolInvocation) => {
+                const { toolName, toolCallId, state, args } = toolInvocation;
 
-                  if (state === 'result') {
-                    const { result } = toolInvocation;
+                if (state === 'result') {
+                  const { result } = toolInvocation;
 
-                    return (
-                      <div key={toolCallId}>
-                        {toolName === 'getWeather' ? (
+                  return (
+                    <div key={toolCallId}>
+                      {/* {toolName === 'getWeather' ? (
                           <Weather weatherAtLocation={result} />
                         ) : toolName === 'createDocument' ? (
                           <DocumentPreview
@@ -168,53 +168,56 @@ const PurePreviewMessage = ({
                           />
                         ) : (
                           <pre>{JSON.stringify(result, null, 2)}</pre>
-                        )}
-                      </div>
-                    );
-                  }
-                  return (
-                    <div
-                      key={toolCallId}
-                      className={cx({
-                        skeleton: ['getWeather'].includes(toolName),
-                      })}
-                    >
-                      {toolName === 'getWeather' ? (
-                        <Weather />
-                      ) : toolName === 'createDocument' ? (
-                        <DocumentPreview isReadonly={isReadonly} args={args} />
-                      ) : toolName === 'updateDocument' ? (
-                        <DocumentToolCall
-                          type="update"
-                          args={args}
-                          isReadonly={isReadonly}
-                        />
-                      ) : toolName === 'requestSuggestions' ? (
-                        <DocumentToolCall
-                          type="request-suggestions"
-                          args={args}
-                          isReadonly={isReadonly}
-                        />
-                      ) : null}
+                        )} */}
+
+
+                      <pre>{JSON.stringify(result, null, 2)}</pre>
                     </div>
                   );
-                })}
-              </div>
-            )}
+                }
+                return (
+                  <div
+                    key={toolCallId}
+                    className={cx({
+                      skeleton: ['getWeather'].includes(toolName),
+                    })}
+                  >
+                    {/* {toolName === 'getWeather' ? (
+                      <Weather />
+                    ) : toolName === 'createDocument' ? (
+                      <DocumentPreview isReadonly={isReadonly} args={args} />
+                    ) : toolName === 'updateDocument' ? (
+                      <DocumentToolCall
+                        type="update"
+                        args={args}
+                        isReadonly={isReadonly}
+                      />
+                    ) : toolName === 'requestSuggestions' ? (
+                      <DocumentToolCall
+                        type="request-suggestions"
+                        args={args}
+                        isReadonly={isReadonly}
+                      />
+                    ) : null} */}
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
-            {!isReadonly && (
-              <MessageActions
-                key={`action-${message.id}`}
-                chatId={chatId}
-                message={message}
-                vote={vote}
-                isLoading={isLoading}
-              />
-            )}
-          </div>
+          {/* {!isReadonly && (
+            <MessageActions
+              key={`action-${message.id}`}
+              chatId={chatId}
+              message={message}
+              vote={vote}
+              isLoading={isLoading}
+            />
+          )} */}
         </div>
+        {/* </div> */}
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence >
   );
 };
 
@@ -232,7 +235,7 @@ export const PreviewMessage = memo(
       )
     )
       return false;
-    if (!equal(prevProps.vote, nextProps.vote)) return false;
+    // if (!equal(prevProps.vote, nextProps.vote)) return false;
 
     return true;
   },

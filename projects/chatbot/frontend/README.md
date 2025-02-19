@@ -344,6 +344,11 @@ npm install sonner
 npm install usehooks-ts
 ```
 
+### date-fns
+```shell
+npm install date-fns
+```
+
 ### remark-gfm 
 ```shell
 npm install remark-gfm
@@ -464,7 +469,20 @@ npx shadcn@latest add textarea
 npx shadcn@latest add tooltip
 ```
 
+or, for React 19+ and Nextjs 15+ use the following commands.
+```shell
+npx shadcn@canary add tooltip
+```
+
 ### Add `ai` package
 ```shell
 npm install ai
 ```
+
+## SVG Logo
+To convert an svg logo to embed within react need to follow the steps below.
+- https://simpleicons.org/ to download logo in svg
+- Go to [](https://nikitahl.github.io/svg-2-code/)
+- Copy code to clipboard
+- https://react-svgr.com/playground/ to convert as react
+- https://github.com/homarr-labs/dashboard-icons

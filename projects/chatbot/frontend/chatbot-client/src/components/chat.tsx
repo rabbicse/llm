@@ -6,103 +6,150 @@ import type {
   CreateMessage,
   Message,
 } from "ai";
-import { useChat } from "ai/react";
 import { useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 
 import { ChatHeader } from '@/components/chat-header';
-// import type { Vote } from '@/lib/db/schema';
-import { generateUUID } from "@/lib/utils";
 
 // import { Artifact } from './artifact';
 import { MultimodalInput } from "@/components/multimodal-input";
-import { Messages } from "./messages";
+import { Messages } from "@/components/messages";
+import { generateUUID } from "@/lib/utils";
 // import { VisibilityType } from './visibility-selector';
 // import { useArtifactSelector } from '@/hooks/use-artifact';
-import { toast } from "sonner";
 
 export function Chat({
   id,
-  //   initialMessages,
-  //   selectedChatModel,
+  initialMessages,
+  selectedChatModel,
   //   selectedVisibilityType,
   isReadonly,
 }: {
   id: string;
-  //   initialMessages: Array<Message>;
-  //   selectedChatModel: string;
+  initialMessages: Array<Message>;
+  selectedChatModel: string;
   //   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
 }) {
+  const apiUrl = "http://localhost:8000/chat/stream";//process.env.NEXT_API_URL;
   const { mutate } = useSWRConfig();
-
-  //   const {
-  //     messages,
-  //     setMessages,
-  //     handleSubmit,
-  //     input,
-  //     setInput,
-  //     append,
-  //     isLoading,
-  //     stop,
-  //     reload,
-  //   } = useChat({
-  //     id,
-  //     body: { id, selectedChatModel: selectedChatModel },
-  //     initialMessages,
-  //     experimental_throttle: 100,
-  //     sendExtraMessageFields: true,
-  //     generateId: generateUUID,
-  //     onFinish: () => {
-  //       mutate("/api/history");
-  //     },
-  //     onError: (exp) => {
-  //       toast.error(`An error occured, please try again! Details: ${exp}`);
-  //     },
-  //   });
-
-  //   const { data: votes } = useSWR<Array<Vote>>(
-  //     `/api/vote?chatId=${id}`,
-  //     fetcher,
-  //   );
-
-  const [input, setInput] = useState<string>("");
+  const [textInput, setTextInput] = useState<string>("");
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  //   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
-  //   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
-
-  // const [input, setInput] = useState<string>("");
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  // Append function to append LLM responses
   const append = async (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions
   ): Promise<string | null | undefined> => {
-    setMessages((prev) => [...prev, message]);
-    return message.id; // Mock response
+    // Ensure the message has an ID
+    const newMessage: Message = {
+      id: generateUUID(),
+      content: message.content,
+      role: message.role,
+      createdAt: message.createdAt ?? new Date(), // Ensure valid Date
+    };
+
+    setMessages((draft) => [
+      ...draft,
+      newMessage]); // Append safely
+    return newMessage.id;
   };
 
-  const handleSubmit = async (event?: { preventDefault?: () => void }) => {
+
+  // Function to handle form submit operation
+  const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
 
-    if (!input.trim() && attachments.length === 0) return;
+    if (!textInput.trim() && attachments.length === 0) return;
 
     setIsLoading(true);
+
+
     const newMessage: Message = {
-      id: Date.now().toString(),
-      content: input,
+      id: generateUUID(),
+      content: textInput,
       role: "user",
     };
 
-    setMessages((prev) => [...prev, newMessage]);
-    setInput("");
+    const newAiMessage: Message = {
+      id: generateUUID(),
+      content: textInput,
+      role: "assistant",
+    };
+
+    // Set messages before request to AI
+    setMessages((draft) => [
+      ...draft,
+      newMessage,
+      newAiMessage]);
+
+    setTextInput("");
     setAttachments([]);
 
-    await append(newMessage);
-    setIsLoading(false);
+
+    try {
+      const response = await fetch(`${apiUrl}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: textInput.trim() }),
+      });
+
+      setIsLoading(false);
+
+      if (response.ok && response.body != null) {
+        const reader = response.body.getReader();
+        let receivedText = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          receivedText += new TextDecoder().decode(value);
+          setMessages([
+            ...messages,
+            {
+              id: generateUUID(),
+              content: receivedText,
+              role: "assistant",
+            },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setMessages([
+        ...messages,
+        {
+          id: Date.now().toString(),
+          content: "",
+          role: "assistant"
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Define reload function
+  const reload = async (chatRequestOptions?: ChatRequestOptions): Promise<string | null | undefined> => {
+    setIsLoading(true);
+    try {
+      // Simulate fetching new messages
+      const newMessages: Message[] = [
+        { id: "1", content: "New message", role: "assistant", createdAt: new Date() },
+      ];
+      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+
+      return "Reloaded successfully"; // Simulate a response
+    } catch (error) {
+      console.error("Error reloading messages:", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -110,28 +157,28 @@ export function Chat({
       <div className="flex flex-col min-w-0 h-dvh bg-background">
         <ChatHeader
           chatId={id}
-        //   selectedModelId={selectedChatModel}
-        //   selectedVisibilityType={selectedVisibilityType}
+          selectedModelId={selectedChatModel}
+          //   selectedVisibilityType={selectedVisibilityType}
           isReadonly={isReadonly}
         />
 
-        {/* <Messages
+        <Messages
           chatId={id}
           isLoading={isLoading}
-          votes={votes}
+          // votes={votes}
           messages={messages}
           setMessages={setMessages}
           reload={reload}
           isReadonly={isReadonly}
-          isArtifactVisible={isArtifactVisible}
-        /> */}
+          isArtifactVisible={false}
+        />
 
         <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
           {!isReadonly && (
             <MultimodalInput
               chatId={id}
-              input={input}
-              setInput={setInput}
+              input={textInput}
+              setInput={setTextInput}
               handleSubmit={handleSubmit}
               isLoading={isLoading}
               stop={() => setIsLoading(false)}
