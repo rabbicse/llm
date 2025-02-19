@@ -29,7 +29,7 @@ export function Chat({
   //   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
 }) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL; // "http://localhost:8000/chat/stream"; //process.env.API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/chat/stream";
   const { mutate } = useSWRConfig();
   const [textInput, setTextInput] = useState<string>("");
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
