@@ -32,13 +32,13 @@ export function Chat({
         initialMessages: savedMessages,
         id: CHAT_ID,
         body: {
-            id
+            query: "hi"
         },
         onFinish: () => {
             window.history.replaceState({}, '', `/search/${id}`)
         },
         onError: error => {
-            toast.error(`Error in chat: ${error.message}`)
+            toast.error(`Error in chat: ${error}`)
         },
         sendExtraMessageFields: false // Disable extra message fields
     })
