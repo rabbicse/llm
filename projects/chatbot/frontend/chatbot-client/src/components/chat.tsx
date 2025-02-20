@@ -1,11 +1,5 @@
 "use client";
 
-import type {
-  Attachment,
-  ChatRequestOptions,
-  CreateMessage,
-  Message,
-} from "ai";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
@@ -15,6 +9,12 @@ import { ChatHeader } from "@/components/chat-header";
 import { MultimodalInput } from "@/components/multimodal-input";
 import { Messages } from "@/components/messages";
 import { generateUUID } from "@/lib/utils";
+import { Message, useChat } from '@ai-sdk/react';
+import type {
+  Attachment,
+  ChatRequestOptions,
+  CreateMessage,
+} from "ai";
 
 export function Chat({
   id,
@@ -29,7 +29,9 @@ export function Chat({
   //   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
 }) {
+
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/chat/stream";
+  
   const { mutate } = useSWRConfig();
   const [textInput, setTextInput] = useState<string>("");
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
@@ -59,7 +61,7 @@ export function Chat({
 
     if (!textInput.trim() && attachments.length === 0) return;
 
-    setIsLoading(true);
+    setIsLoading(true);    
 
     const newMessage: Message = {
       id: generateUUID(),
@@ -177,6 +179,20 @@ export function Chat({
 
         <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
           {!isReadonly && (
+            // <MultimodalInput
+            //   chatId={id}
+            //   input={textInput}
+            //   setInput={setTextInput}
+            //   handleSubmit={handleSubmit}
+            //   isLoading={isLoading}
+            //   stop={() => setIsLoading(false)}
+            //   attachments={attachments}
+            //   setAttachments={setAttachments}
+            //   messages={messages}
+            //   setMessages={setMessages}
+            //   append={append}
+            // />
+
             <MultimodalInput
               chatId={id}
               input={textInput}

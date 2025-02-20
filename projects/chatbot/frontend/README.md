@@ -476,7 +476,7 @@ npx shadcn@canary add tooltip
 
 ### Add `ai` package
 ```shell
-npm install ai
+npm install @ai-sdk/react
 ```
 
 ## SVG Logo
