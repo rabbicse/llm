@@ -2,7 +2,6 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import OllamaLLM, OllamaEmbeddings
-
 from data_ingestion import llm_config
 from data_ingestion.document_parser import DocumentParser
 

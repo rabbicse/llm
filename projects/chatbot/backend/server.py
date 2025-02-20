@@ -23,10 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 ai_service = OllamaService()
 
 
 @app.post("/chat/stream")
 async def chat_stream(request: ChatRequest):
-    return StreamingResponse(ai_service.get_chat_stream(request.query), media_type="text/event-stream")
+    return StreamingResponse(ai_service.get_chat_stream(request.query),
+                             media_type="text/event-stream")
