@@ -7,7 +7,8 @@ import { ChatInput } from "./chat-input";
 import { toast } from "sonner";
 import { ChatMessages } from "./chat-messages";
 import { ChatRequestOptions, UIMessage } from "ai";
-import useSWR from 'swr';
+import useSWR from "swr";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { fillMessageParts, generateUUID, getMessageParts } from "@/lib/utils";
 
 export function Chat({
@@ -19,9 +20,9 @@ export function Chat({
   savedMessages?: Message[];
   query?: string;
 }) {
-
   // declare API url
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/chat/stream";
+  const apiUrl =
+    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/chat/stream";
 
   // Input state and handlers.
   const initialInput = "";
@@ -42,14 +43,14 @@ export function Chat({
 
   // Store the chat state in SWR, using the chatId as the key to share states.
   const { data: messages, mutate } = useSWR<Message[]>(
-    [chatKey, 'messages'],
+    [chatKey, "messages"],
     null,
     {
       fallbackData:
         savedMessages != null
           ? fillMessageParts(savedMessages)
           : initialMessagesFallback,
-    },
+    }
   );
 
   // Keep the latest messages in a ref.
@@ -60,7 +61,7 @@ export function Chat({
 
   const setMessages = useCallback(
     (messages: Message[] | ((messages: Message[]) => Message[])) => {
-      if (typeof messages === 'function') {
+      if (typeof messages === "function") {
         messages = messages(messagesRef.current);
       }
 
@@ -68,14 +69,86 @@ export function Chat({
       mutate(messagesWithParts, false);
       messagesRef.current = messagesWithParts;
     },
-    [mutate],
+    [mutate]
   );
+
+  // const handleSubmit = useCallback(
+  //   async (
+  //     event?: { preventDefault?: () => void },
+  //     options: ChatRequestOptions = {},
+  //     metadata?: Object,
+  //   ) => {
+  //     event?.preventDefault?.();
+
+  //     if (!inputContent && !options.allowEmptySubmit) return;
+
+  //     const messages = messagesRef.current.concat({
+  //       id: generateUUID(),
+  //       createdAt: new Date(),
+  //       role: 'user',
+  //       content: inputContent,
+  //       parts: [{ type: 'text', text: inputContent }],
+  //     });
+
+  //     // todo: service call and handle messages
+  //     try {
+  //       setIsLoading(true);
+
+  //       const newMessage: Message = {
+  //         id: generateUUID(),
+  //         content: inputContent,
+  //         role: "user",
+  //       };
+
+  //       // Set messages before request to AI
+  //       setMessages((draft) => {
+  //         console.log(draft);
+  //         return [...draft, newMessage];
+  //       });
+
+  //       const response = await fetch(`${apiUrl}`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ query: inputContent.trim() }),
+  //       });
+
+  //       if (response.ok && response.body != null) {
+  //         const reader = response.body.getReader();
+  //         let receivedText = "";
+
+  //         while (true) {
+  //           const { done, value } = await reader.read();
+  //           if (done) break;
+  //           receivedText += new TextDecoder().decode(value).replace("data:", "").replace("\n", "")
+  //           setMessages([
+  //             ...messages,
+  //             {
+  //               id: generateUUID(),
+  //               content: receivedText,
+  //               role: "assistant",
+  //             },
+  //           ]);
+  //         }
+  //       }
+
+  //     } catch (err) {
+  //       console.log(`Error when streaming services. Details: ${err}`);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+
+  //     setInputContent('');
+  //   },
+  //   [inputContent],
+  // );
 
   const handleSubmit = useCallback(
     async (
       event?: { preventDefault?: () => void },
-      options: ChatRequestOptions = {},
-      metadata?: Object,
+      options: ChatRequestOptions = {}
+      // metadata?: Object,
     ) => {
       event?.preventDefault?.();
 
@@ -84,71 +157,95 @@ export function Chat({
       const messages = messagesRef.current.concat({
         id: generateUUID(),
         createdAt: new Date(),
-        role: 'user',
+        role: "user",
         content: inputContent,
-        parts: [{ type: 'text', text: inputContent }],
+        parts: [{ type: "text", text: inputContent }],
       });
 
       // todo: service call and handle messages
       try {
         setIsLoading(true);
 
-        const newMessage: Message = {
-          id: generateUUID(),
-          content: inputContent,
-          role: "user",
-        };
-    
-   
-        // Set messages before request to AI
-        setMessages((draft) => {
-          console.log(draft);
-          return [...draft, newMessage];
-        });
-
-        const response = await fetch(`${apiUrl}`, {
+        // const fetchData = async () => {
+        await fetchEventSource(`${apiUrl}`, {
           method: "POST",
           headers: {
+            Accept: "text/event-stream",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query: inputContent.trim() }),
-        });
-
-
-        if (response.ok && response.body != null) {
-          const reader = response.body.getReader();
-          let receivedText = "";
-
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            receivedText += new TextDecoder().decode(value).replace("data:", "").replace("\n", "")
-            setMessages([
-              ...messages,
+          body: JSON.stringify({ query: inputContent }),
+          onopen(res) {
+            if (res.ok && res.status === 200) {
+              console.log("Connection made ", res);
+            } else if (
+              res.status >= 400 &&
+              res.status < 500 &&
+              res.status !== 429
+            ) {
+              console.log("Client side error ", res);
+            }
+          },
+          onmessage(event) {
+            console.log(event.data);
+            // const parsedData = JSON.parse(event.data);
+            setMessages((data) => [
+              ...data,
               {
                 id: generateUUID(),
-                content: receivedText,
+                content: event.data,
                 role: "assistant",
               },
             ]);
-          }
-        }
+          },
+          onclose() {
+            console.log("Connection closed by the server");
+          },
+          onerror(err) {
+            console.log("There was an error from server", err);
+          },
+          // });
+        });
 
+        // const append = (message,
+        //   { data, headers, body } = {},) => {
+        // };
 
+        // const response = await fetch(`${apiUrl}`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ query: inputContent.trim() }),
+        // });
+
+        // if (response.ok && response.body != null) {
+        //   const reader = response.body.getReader();
+        //   let receivedText = "";
+
+        //   while (true) {
+        //     const { done, value } = await reader.read();
+        //     if (done) break;
+        //     receivedText += new TextDecoder().decode(value).replace("data:", "").replace("\n", "")
+        //     setMessages([
+        //       ...messages,
+        //       {
+        //         id: generateUUID(),
+        //         content: receivedText,
+        //         role: "assistant",
+        //       },
+        //     ]);
+        //   }
+        // }
       } catch (err) {
         console.log(`Error when streaming services. Details: ${err}`);
       } finally {
         setIsLoading(false);
       }
 
-      setInputContent('');
+      setInputContent("");
     },
-    [inputContent],
+    [inputContent, setInputContent, apiUrl, setMessages]
   );
-
-  // const append = (message,
-  //   { data, headers, body } = {},) => {
-  // };
 
   const handleInputChange = (e: any) => {
     setInputContent(e.target.value);
@@ -169,7 +266,6 @@ export function Chat({
     handleSubmit(e);
   };
 
-
   return (
     <div className="flex flex-col w-full max-w-3xl pt-14 pb-60 mx-auto stretch">
       <ChatMessages
@@ -189,7 +285,7 @@ export function Chat({
         setMessages={setMessages}
         // stop={stop}
         query={query}
-      // append={append}
+        // append={append}
       />
     </div>
   );
