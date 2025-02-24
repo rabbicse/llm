@@ -1,9 +1,9 @@
 'use client';
 
 import { Chat } from "@/components/chat";
-// import { generateId } from 'ai'
+import { generateUUID } from "@/lib/utils";
 
 export default function Home() {
-  // const id = generateId()
-  return <Chat id={`1`} />;
+  const id = generateUUID();
+  return <Chat id={id} />;
 }

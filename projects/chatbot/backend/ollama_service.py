@@ -30,7 +30,7 @@ def convert_to_serializable(response):
 
 class OllamaService:
     def __init__(self,
-                 address: str = "http://localhost:11434",
+                 address: str = 'http://192.168.97.67:11434',  # "http://localhost:11434",
                  model: str = "deepseek-r1:1.5b"):
         self._address = address
         self._model = model
@@ -42,7 +42,7 @@ class OllamaService:
         stream = client.chat(model=self._model, messages=chat_messages, stream=True)
 
         for chunk in stream:
-            #yield chunk['message']['content']
+            # yield chunk['message']['content']
             yield f"data: {chunk['message']['content']}\n\n"
 
         # for chunk in stream:

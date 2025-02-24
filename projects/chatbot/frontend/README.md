@@ -334,9 +334,73 @@ Update `global.css` file as the following snippet.
 ```
 
 ## Install necessary packages
-### sonner
+### next-themes
 ```shell
-npm install sonner
+npm install next-themes
+```
+
+### react-icons
+```
+npm install react-icons
+```
+
+## Shadcn-ui
+Add the following components.
+```shell
+npx shadcn@latest add alert-dialog
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dropdown-menu
+npx shadcn@latest add input
+npx shadcn@latest add label
+npx shadcn@latest add select
+npx shadcn@latest add separator
+npx shadcn@latest add sheet
+npx shadcn@latest add sidebar
+npx shadcn@latest add skeleton
+npx shadcn@latest add textarea
+npx shadcn@latest add tooltip
+```
+
+or, for React 19+ and Nextjs 15+ use the following commands.
+```shell
+npx shadcn@canary add button
+npx shadcn@canary add sonner
+npx shadcn@canary add collapsible
+npx shadcn@canary add separator
+npx shadcn@canary add badge
+npx shadcn@canary add avatar
+npx shadcn@canary add dialog
+npx shadcn@canary add carousel
+npx shadcn@canary add card
+npx shadcn@canary add tooltip
+```
+
+### react-textarea-autosize
+```shell
+npm install react-textarea-autosize
+```
+
+### rehype
+```shell
+npm install rehype-external-links
+npm install rehype-katex
+```
+
+### remark
+```shell
+npm install remark-gfm
+npm install remark-math
+```
+
+### react-markdown
+```shell
+npm install react-markdown
+```
+
+### react-syntax-highlighter
+```shell
+npm install react-syntax-highlighter
 ```
 
 ### usehooks-ts
@@ -349,16 +413,6 @@ npm install usehooks-ts
 npm install date-fns
 ```
 
-### remark-gfm 
-```shell
-npm install remark-gfm
-```
-
-### react-markdown
-```shell
-npm install react-markdown
-```
-
 ### react-data-grid
 ```shell
 npm install react-data-grid
@@ -368,11 +422,6 @@ npm install react-data-grid
 ```shell
 npm install papaparse
 npm install --save-dev @types/papaparse
-```
-
-### next-themes
-```shell
-npm install next-themes
 ```
 
 ### prosemirror-view
@@ -451,34 +500,14 @@ npm install @ai-sdk/fireworks
 npm install @ai-sdk/openai
 ```
 
-## Shadcn-ui
-Add the following components.
-```shell
-npx shadcn@latest add alert-dialog
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add dropdown-menu
-npx shadcn@latest add input
-npx shadcn@latest add label
-npx shadcn@latest add select
-npx shadcn@latest add separator
-npx shadcn@latest add sheet
-npx shadcn@latest add sidebar
-npx shadcn@latest add skeleton
-npx shadcn@latest add textarea
-npx shadcn@latest add tooltip
-```
-
-or, for React 19+ and Nextjs 15+ use the following commands.
-```shell
-npx shadcn@canary add tooltip
-```
-
 ### Add `ai` package
 ```shell
 npm install @ai-sdk/react
 ```
 
+## Stream parsing:
+- [Stream parsing](https://blog.logrocket.com/using-fetch-event-source-server-sent-events-react/)
+ 
 ## SVG Logo
 To convert an svg logo to embed within react need to follow the steps below.
 - https://simpleicons.org/ to download logo in svg
