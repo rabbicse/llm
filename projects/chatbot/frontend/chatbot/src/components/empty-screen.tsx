@@ -11,6 +11,10 @@ const exampleMessages = [
     message: 'Why is Nvidia growing rapidly?'
   },
   {
+    heading: 'Create simple html login form',
+    message: 'Create simple html login form'
+  },
+  {
     heading: 'Tesla vs Rivian',
     message: 'Tesla vs Rivian'
   },

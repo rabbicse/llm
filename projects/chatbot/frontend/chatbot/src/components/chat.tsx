@@ -1,17 +1,12 @@
 "use client";
 
-import { CHAT_ID } from "@/lib/constants";
 import { Message } from "ai";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatInput } from "./chat-input";
-import { toast } from "sonner";
 import { ChatMessages } from "./chat-messages";
-import { ChatRequestOptions, UIMessage } from "ai";
 import useSWR from "swr";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { fillMessageParts, generateUUID, getMessageParts } from "@/lib/utils";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
-import Markdown from "react-markdown";
+import { fillMessageParts, generateUUID } from "@/lib/utils";
 
 export function Chat({
   id,
@@ -147,9 +142,7 @@ export function Chat({
   // );
 
   const handleSubmit = useCallback(
-    async (
-      event?: { preventDefault?: () => void }
-    ) => {
+    async (event?: { preventDefault?: () => void }) => {
       event?.preventDefault?.();
 
       if (!inputContent) return;
@@ -172,72 +165,18 @@ export function Chat({
           role: "user",
         };
 
-
         // Set messages before request to AI
         setMessages((draft) => {
           console.log(draft);
           return [...draft, newMessage];
         });
 
-        // const response = await fetch(`${apiUrl}`, {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({ query: inputContent }),
-        // });
-
-
-        // if (response.ok && response.body != null) {
-        //   const reader = response.body.getReader();
-        //   // let receivedText = "";
-
-        //   while (true) {
-        //     const { done, value } = await reader.read();
-        //     if (done) break;
-        //     const receivedText = new TextDecoder().decode(value);//.replace("data:", "").replace("\n", "")
-        //     // setMessages([
-        //     //   ...messages,
-        //     //   {
-        //     //     id: generateUUID(),
-        //     //     content: receivedText,
-        //     //     role: "assistant",
-        //     //   },
-        //     // ]);
-
-        //     const content = {
-        //       id: generateUUID(),
-        //       content: receivedText,
-        //       role: "assistant",
-        //       parts: [{ type: 'text', text: receivedText }]
-        //     }
-
-        //     setMessages((draft) => {
-        //       const lastMessage = draft[draft.length - 1];
-        //       if (lastMessage?.role === 'assistant') {
-        //         console.log(`assistant`);
-        //         // Append to the last assistant message
-        //         return [
-        //           ...draft.slice(0, -1),
-        //           {
-        //             ...lastMessage,
-        //             content: lastMessage.content + receivedText,
-        //           },
-        //         ];
-        //       } else {
-        //         // Add a new assistant message
-        //         return [...draft, content];
-        //       }
-        //     });
-        //   }
-        // }
-
-        let content = "";
+        // call streaming service
         await fetchEventSource(`${apiUrl}`, {
           method: "POST",
           headers: {
             Accept: "text/event-stream",
-            "Content-Type": "application/json", // ✅ Add this line
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ query: inputContent }),
           onopen(res) {
@@ -259,12 +198,12 @@ export function Chat({
               id: generateUUID(),
               content: event.data,
               role: "assistant",
-              parts: [{ type: 'text', text: event.data }]
-            }
+              parts: [{ type: "text", text: event.data }],
+            };
 
             setMessages((draft) => {
               const lastMessage = draft[draft.length - 1];
-              if (lastMessage?.role === 'assistant') {
+              if (lastMessage?.role === "assistant") {
                 console.log(`assistant`);
                 // Append to the last assistant message
                 return [
@@ -297,9 +236,6 @@ export function Chat({
             console.log("There was an error from server", err);
           },
         });
-
-
-
       } catch (err) {
         console.log(`Error when streaming services. Details: ${err}`);
       } finally {
