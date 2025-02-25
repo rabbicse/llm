@@ -39,14 +39,12 @@ class OllamaService:
         client = Client(host=self._address)
         chat_messages: list[dict[str, str]] = [{'role': 'user', 'content': query}]
 
-        try:
-            stream = client.chat(model=self._model, messages=chat_messages, stream=True)
-            for chunk in stream:
-                if 'message' in chunk and 'content' in chunk['message']:
-                    yield f"data: {json.dumps(chunk['message']['content'])}\n\n"
-        except Exception as e:
-            print(e)
-            yield f"data: Error: {str(e)}\n\n"
+        stream = client.chat(model=self._model, messages=chat_messages, stream=True)
+
+        for chunk in stream:
+            if 'message' in chunk and 'content' in chunk['message']:
+                # yield chunk['message']['content']
+                yield f"data: {chunk['message']['content']}\n\n"
 
         # for chunk in stream:
         #     formatted_chunk = convert_to_serializable(chunk)

@@ -506,6 +506,7 @@ npm install @ai-sdk/react
 ```
 
 ## Stream parsing:
+- [use-chat](https://github.com/vercel/ai/blob/main/packages/solid/src/use-chat.ts)
 - [Stream parsing](https://blog.logrocket.com/using-fetch-event-source-server-sent-events-react/)
  
 ## SVG Logo
