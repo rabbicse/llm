@@ -9,6 +9,8 @@ import { ChatMessages } from "./chat-messages";
 import { ChatRequestOptions, UIMessage } from "ai";
 import useSWR from 'swr';
 import { fillMessageParts, generateUUID, getMessageParts } from "@/lib/utils";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import Markdown from "react-markdown";
 
 export function Chat({
   id,
@@ -73,15 +75,13 @@ export function Chat({
 
   const handleSubmit = useCallback(
     async (
-      event?: { preventDefault?: () => void },
-      options: ChatRequestOptions = {},
-      metadata?: Object,
+      event?: { preventDefault?: () => void }
     ) => {
       event?.preventDefault?.();
 
-      if (!inputContent && !options.allowEmptySubmit) return;
+      if (!inputContent) return;
 
-      const messages = messagesRef.current.concat({
+      let messages = messagesRef.current.concat({
         id: generateUUID(),
         createdAt: new Date(),
         role: 'user',
@@ -98,41 +98,133 @@ export function Chat({
           content: inputContent,
           role: "user",
         };
-    
-   
+
+
         // Set messages before request to AI
         setMessages((draft) => {
           console.log(draft);
           return [...draft, newMessage];
         });
 
-        const response = await fetch(`${apiUrl}`, {
+        // const response = await fetch(`${apiUrl}`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ query: inputContent }),
+        // });
+
+
+        // if (response.ok && response.body != null) {
+        //   const reader = response.body.getReader();
+        //   // let receivedText = "";
+
+        //   while (true) {
+        //     const { done, value } = await reader.read();
+        //     if (done) break;
+        //     const receivedText = new TextDecoder().decode(value);//.replace("data:", "").replace("\n", "")
+        //     // setMessages([
+        //     //   ...messages,
+        //     //   {
+        //     //     id: generateUUID(),
+        //     //     content: receivedText,
+        //     //     role: "assistant",
+        //     //   },
+        //     // ]);
+
+        //     const content = {
+        //       id: generateUUID(),
+        //       content: receivedText,
+        //       role: "assistant",
+        //       parts: [{ type: 'text', text: receivedText }]
+        //     }
+
+        //     setMessages((draft) => {
+        //       const lastMessage = draft[draft.length - 1];
+        //       if (lastMessage?.role === 'assistant') {
+        //         console.log(`assistant`);
+        //         // Append to the last assistant message
+        //         return [
+        //           ...draft.slice(0, -1),
+        //           {
+        //             ...lastMessage,
+        //             content: lastMessage.content + receivedText,
+        //           },
+        //         ];
+        //       } else {
+        //         // Add a new assistant message
+        //         return [...draft, content];
+        //       }
+        //     });
+        //   }
+        // }
+
+        let content = "";
+        await fetchEventSource(`${apiUrl}`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            Accept: "text/event-stream",
+            "Content-Type": "application/json", // ✅ Add this line
           },
-          body: JSON.stringify({ query: inputContent.trim() }),
+          body: JSON.stringify({ query: inputContent }),
+          onopen(res) {
+            if (res.ok && res.status === 200) {
+              console.log("Connection made ", res);
+            } else if (
+              res.status >= 400 &&
+              res.status < 500 &&
+              res.status !== 429
+            ) {
+              console.log("Client side error ", res);
+            }
+          },
+          onmessage(event) {
+            // console.log(event.data);
+            // const parsedData = JSON.parse(event.data);
+            // content += event.data;
+            const content = {
+              id: generateUUID(),
+              content: event.data,
+              role: "assistant",
+              parts: [{ type: 'text', text: event.data }]
+            }
+
+            setMessages((draft) => {
+              const lastMessage = draft[draft.length - 1];
+              if (lastMessage?.role === 'assistant') {
+                console.log(`assistant`);
+                // Append to the last assistant message
+                return [
+                  ...draft.slice(0, -1),
+                  {
+                    ...lastMessage,
+                    content: lastMessage.content + event.data,
+                  },
+                ];
+              } else {
+                // Add a new assistant message
+                return [...draft, content];
+              }
+            });
+
+            //     // setContents((draft) => [...draft, event.data]);
+
+            //     // messages = messagesRef.current.concat({
+            //     //   id: generateUUID(),
+            //     //   createdAt: new Date(),
+            //     //   role: 'user',
+            //     //   content: event.data,
+            //     //   parts: [{ type: 'text', text: event.data }],
+            //     // });
+          },
+          onclose() {
+            console.log("Connection closed by the server");
+          },
+          onerror(err) {
+            console.log("There was an error from server", err);
+          },
         });
 
-
-        if (response.ok && response.body != null) {
-          const reader = response.body.getReader();
-          let receivedText = "";
-
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            receivedText += new TextDecoder().decode(value).replace("data:", "").replace("\n", "")
-            setMessages([
-              ...messages,
-              {
-                id: generateUUID(),
-                content: receivedText,
-                role: "assistant",
-              },
-            ]);
-          }
-        }
 
 
       } catch (err) {

@@ -42,8 +42,9 @@ class OllamaService:
         stream = client.chat(model=self._model, messages=chat_messages, stream=True)
 
         for chunk in stream:
-            # yield chunk['message']['content']
-            yield f"data: {chunk['message']['content']}\n\n"
+            if 'message' in chunk and 'content' in chunk['message']:
+                # yield chunk['message']['content']
+                yield f"data: {chunk['message']['content']}\n\n"
 
         # for chunk in stream:
         #     formatted_chunk = convert_to_serializable(chunk)
