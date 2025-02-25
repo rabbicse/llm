@@ -42,7 +42,7 @@ export function ChatMessages({
         }
     }, [messages])
 
-    // get last tool data for manual tool call
+    // // get last tool data for manual tool call
     // const lastToolData = useMemo(() => {
     //     if (!data || !Array.isArray(data) || data.length === 0) return null
 
