@@ -28,13 +28,5 @@ ai_service = OllamaService()
 
 @app.post("/chat/stream")
 async def chat_stream(request: ChatRequest):
-    async def event_generator():
-        async for chunk in ai_service.get_chat_stream(request.query):
-            yield chunk  # Already in SSE format
-
-<<<<<<< HEAD
-    return StreamingResponse(event_generator(),
+    return StreamingResponse(ai_service.get_chat_stream(request.query),
                              media_type="text/event-stream")
-=======
-    return StreamingResponse(ai_service.get_chat_stream(request.query), media_type="text/event-stream")
->>>>>>> 8a50403f63cc41462a5db85141fcff5fbe933cbe

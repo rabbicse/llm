@@ -35,7 +35,7 @@ class OllamaService:
         self._address = address
         self._model = model
 
-    async def get_chat_stream(self, query: str):
+    def get_chat_stream(self, query: str):
         client = Client(host=self._address)
         chat_messages: list[dict[str, str]] = [{'role': 'user', 'content': query}]
 
@@ -44,7 +44,8 @@ class OllamaService:
         for chunk in stream:
             if 'message' in chunk and 'content' in chunk['message']:
                 # yield chunk['message']['content']
-                yield f"data: {chunk['message']['content']}\n\n"
+                content = {'content': chunk['message']['content']}
+                yield f"data: {json.dumps(content)}\n\n"
 
         # for chunk in stream:
         #     formatted_chunk = convert_to_serializable(chunk)
