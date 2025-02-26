@@ -223,6 +223,11 @@ npm install react-code-blocks
 npm install @radix-ui/react-icons
 ```
 
+### @microsoft/fetch-event-source
+```shell
+npm install @microsoft/fetch-event-source
+```
+
 ## Implementation
 ### theme-privider.tsx
 Add `theme-provider.tsx` under components directory with the following code block.
