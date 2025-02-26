@@ -7,7 +7,7 @@ import { Spinner } from '@/components/ui/spinner'
 interface ChatMessagesProps {
     messages: Message[]
     // data: JSONValue[] | undefined
-    onQuerySelect: (query: string) => void
+    // onQuerySelect: (query: string) => void
     isLoading: boolean
     chatId?: string
 }
@@ -15,7 +15,7 @@ interface ChatMessagesProps {
 export function ChatMessages({
     messages,
     // data,
-    onQuerySelect,
+    // onQuerySelect,
     isLoading,
     chatId
 }: ChatMessagesProps) {
@@ -98,7 +98,7 @@ export function ChatMessages({
                         messageId={message.id}
                         getIsOpen={getIsOpen}
                         onOpenChange={handleOpenChange}
-                        onQuerySelect={onQuerySelect}
+                        // onQuerySelect={onQuerySelect}
                         chatId={chatId}
                     />
                 </div>

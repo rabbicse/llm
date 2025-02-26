@@ -134,18 +134,6 @@ export function ChatInput({
               {/* <SearchModeToggle /> */}
             </div>
             <div className="flex items-center gap-2">
-              {messages.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleNewChat}
-                  className="shrink-0 rounded-full group"
-                  type="button"
-                  disabled={isLoading}
-                >
-                  <MessageCirclePlus className="size-4 group-hover:rotate-12 transition-all" />
-                </Button>
-              )}
               <Button
                 type={isLoading ? 'button' : 'submit'}
                 size={'icon'}

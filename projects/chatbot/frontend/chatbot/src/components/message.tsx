@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react';
 import { cn } from '@/lib/utils'
 import 'katex/dist/katex.min.css'
 import rehypeExternalLinks from 'rehype-external-links'
@@ -51,38 +52,53 @@ export function BotMessage({
                 'prose-sm prose-neutral prose-a:text-accent-foreground/50',
                 className
             )}
+
             components={{
                 code({ node, inline, className, children, ...props }) {
-                    console.log(children);
                     if (children != undefined && children.length) {
-                        console.log(children);
-                        if (children[0] == '▍') {
+                        // Create a new array to avoid mutating the original children
+                        const updatedChildren = React.Children.toArray(children).map(child => {
+                            console.log(`updated clildren: ${child}`);
+                            if (typeof child === 'string') {
+                                // Replace '`▍`' with '▍' in the string
+                                return child.replace(/`▍`/g, '▍');
+                            }
+                            return child; // Return non-string children as-is
+                        });
+            
+                        // Check if the first child is '▍'
+                        if (updatedChildren[0] === '▍') {
                             return (
                                 <span className="mt-1 cursor-default animate-pulse">▍</span>
-                            )
+                            );
                         }
-
-                        children[0] = (children[0] as string).replace('`▍`', '▍')
-                    }
-
-                    const match = /language-(\w+)/.exec(className || '')
-
-                    if (inline) {
+            
+                        const match = /language-(\w+)/.exec(className || '');
+            
+                        if (inline) {
+                            return (
+                                <code className={className} {...props}>
+                                    {updatedChildren}
+                                </code>
+                            );
+                        }
+            
                         return (
-                            <code className={className} {...props}>
-                                {children}
-                            </code>
-                        )
+                            <CodeBlock
+                                key={Math.random()}
+                                language={(match && match[1]) || ''}
+                                value={String(updatedChildren).replace(/\n$/, '')}
+                                {...props}
+                            />
+                        );
                     }
-
+            
+                    // Default return if children is undefined or empty
                     return (
-                        <CodeBlock
-                            key={Math.random()}
-                            language={(match && match[1]) || ''}
-                            value={String(children).replace(/\n$/, '')}
-                            {...props}
-                        />
-                    )
+                        <code className={className} {...props}>
+                            {children}
+                        </code>
+                    );
                 },
                 a: Citing
             }}

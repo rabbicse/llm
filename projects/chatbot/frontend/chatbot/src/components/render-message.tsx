@@ -11,7 +11,7 @@ interface RenderMessageProps {
     messageId: string
     getIsOpen: (id: string) => boolean
     onOpenChange: (id: string, open: boolean) => void
-    onQuerySelect: (query: string) => void
+    // onQuerySelect: (query: string) => void
     chatId?: string
 }
 
@@ -20,7 +20,7 @@ export function RenderMessage({
     messageId,
     getIsOpen,
     onOpenChange,
-    onQuerySelect,
+    // onQuerySelect,
     chatId
 }: RenderMessageProps) {
     const relatedQuestions = useMemo(
@@ -152,7 +152,7 @@ export function RenderMessage({
                 relatedQuestions.length > 0 && (
                     <RelatedQuestions
                         annotations={relatedQuestions as JSONValue[]}
-                        onQuerySelect={onQuerySelect}
+                        // onQuerySelect={onQuerySelect}
                         isOpen={getIsOpen(`${messageId}-related`)}
                         onOpenChange={open => onOpenChange(`${messageId}-related`, open)}
                     />

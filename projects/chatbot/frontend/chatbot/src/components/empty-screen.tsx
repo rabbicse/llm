@@ -3,6 +3,10 @@ import { ArrowRight } from 'lucide-react'
 
 const exampleMessages = [
   {
+    heading: 'Create simple html login form',
+    message: 'Create simple html login form'
+  },
+  {
     heading: 'What is DeepSeek R1?',
     message: 'What is DeepSeek R1?'
   },

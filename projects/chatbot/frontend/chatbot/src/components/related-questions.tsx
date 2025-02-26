@@ -25,7 +25,7 @@ interface RelatedQuestionsAnnotation extends Record<string, JSONValue> {
 
 export const RelatedQuestions: React.FC<RelatedQuestionsProps> = ({
     annotations,
-    onQuerySelect,
+    // onQuerySelect,
     isOpen,
     onOpenChange
 }) => {
@@ -88,7 +88,7 @@ export const RelatedQuestions: React.FC<RelatedQuestionsProps> = ({
                                     type="submit"
                                     name={'related_query'}
                                     value={item?.query}
-                                    onClick={() => onQuerySelect(item?.query)}
+                                    // onClick={() => onQuerySelect(item?.query)}
                                 >
                                     {item?.query}
                                 </Button>
