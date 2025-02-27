@@ -91,16 +91,25 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
 
               {message.role === "assistant" && (
                 <div className="flex items-end gap-2">
-                  {isLoading ? (
+                  {isLoading &&
+                  messages.indexOf(message) === messages.length - 1 ? (
                     <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
                       {/* <IconLogo className="object-contain dark:invert" /> */}
-                      <AILogo className="object-contain dark:invert" width={32} height={32} />
+                      <AILogo
+                        className="object-contain dark:invert"
+                        width={32}
+                        height={32}
+                      />
                     </Avatar>
                   ) : (
                     <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
                       {/* <IconLogo className="object-contain" /> */}
                       {/* <AILogo className="object-contain" /> */}
-                      <AILogo className="object-contain" width={32} height={32} />
+                      <AILogo
+                        className="object-contain"
+                        width={32}
+                        height={32}
+                      />
                     </Avatar>
                   )}
 
