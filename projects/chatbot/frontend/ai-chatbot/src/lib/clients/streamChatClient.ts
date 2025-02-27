@@ -15,6 +15,7 @@ export const streamChat = async ({
   append: (message: Message) => void;
 }) => {
   try {
+    setIsLoading(true);
     // handle streaming response
     await fetchEventSource(`${apiUrl}`, {
       method: "POST",

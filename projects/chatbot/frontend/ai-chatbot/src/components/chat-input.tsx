@@ -15,7 +15,7 @@ interface ChatInputProps {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   messages: Message[] | undefined;
-  appendAndTrigger: (message: Message) => Promise<string | null | undefined>;
+  appendAndTrigger: (message: Message) => Promise<void>;
 }
 
 export function ChatInput({
@@ -60,7 +60,7 @@ export function ChatInput({
         {messages === undefined ||
           (messages.length === 0 && (
             <div className="mb-6">
-              <SuggestedActions append={appendAndTrigger} chatId={chatId} />
+              <SuggestedActions appendAndTrigger={appendAndTrigger} chatId={chatId} />
             </div>
           ))}
         <div className="relative flex flex-col w-full gap-2 bg-muted rounded-3xl border border-input">

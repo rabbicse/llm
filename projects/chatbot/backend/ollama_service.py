@@ -30,7 +30,8 @@ def convert_to_serializable(response):
 
 class OllamaService:
     def __init__(self,
-                 address: str = 'http://localhost:11434',  # 'http://192.168.97.67:11434',  # "http://localhost:11434",
+                 address: str = 'http://192.168.97.67:11434',
+                 # 'http://localhost:11434',  # 'http://192.168.97.67:11434',  # "http://localhost:11434",
                  model: str = "deepseek-r1:1.5b"):
         self._address = address
         self._model = model

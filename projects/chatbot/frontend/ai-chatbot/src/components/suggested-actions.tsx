@@ -5,13 +5,14 @@ import { Button } from "./ui/button";
 import { memo } from "react";
 import { Message } from "@/lib/types";
 import { generateUUID } from "@/lib/utils";
+import { Overview } from "./overview";
 
 interface SuggestedActionsProps {
   chatId: string;
-  append: (message: Message) => Promise<string | null | undefined>;
+  appendAndTrigger: (message: Message) => Promise<void>;
 }
 
-function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
+function PureSuggestedActions({ chatId, appendAndTrigger }: SuggestedActionsProps) {
   const suggestedActions = [
     {
       title: "What are the advantages",
@@ -36,36 +37,40 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 gap-2 w-full">
-      {suggestedActions.map((suggestedAction, index) => (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.05 * index }}
-          key={`suggested-action-${suggestedAction.title}-${index}`}
-          className={index > 1 ? "hidden sm:block" : "block"}
-        >
-          <Button
-            variant="ghost"
-            onClick={async () => {
-              window.history.replaceState({}, "", `/chat/${chatId}`);
-
-              append({
-                id: generateUUID(),
-                role: "user",
-                content: suggestedAction.action,
-              });
-            }}
-            className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
+    <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto p-4">
+      {/* Overview Section */}
+      <Overview />
+      <div className="grid sm:grid-cols-2 gap-2 w-full">
+        {suggestedActions.map((suggestedAction, index) => (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ delay: 0.05 * index }}
+            key={`suggested-action-${suggestedAction.title}-${index}`}
+            className={index > 1 ? "hidden sm:block" : "block"}
           >
-            <span className="font-medium">{suggestedAction.title}</span>
-            <span className="text-muted-foreground">
-              {suggestedAction.label}
-            </span>
-          </Button>
-        </motion.div>
-      ))}
+            <Button
+              variant="ghost"
+              onClick={async () => {
+                window.history.replaceState({}, "", `/chat/${chatId}`);
+
+                appendAndTrigger({
+                  id: generateUUID(),
+                  role: "user",
+                  content: suggestedAction.action,
+                });
+              }}
+              className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
+            >
+              <span className="font-medium">{suggestedAction.title}</span>
+              <span className="text-muted-foreground">
+                {suggestedAction.label}
+              </span>
+            </Button>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }

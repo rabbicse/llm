@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import CodeDisplayBlock from "@/components/code-display-block";
 import { marked } from "marked";
 import { Message } from "@/lib/types";
-import { OllamaIcon, UserIcon } from "./ui/icons";
+import { IconLogo, OllamaIcon, UserIcon } from "./ui/icons";
+import { toast } from "sonner";
+import { Button } from "./ui/button";
+import { CheckIcon, CopyIcon } from "lucide-react";
 
 interface ChatMessageProps {
   messages: Message[] | undefined;
@@ -15,6 +18,7 @@ interface ChatMessageProps {
 }
 
 export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
+  const [copiedMessageId, setCopiedMessageId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -28,25 +32,25 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
     return (
       <div className="w-full h-full flex justify-center items-center">
         <div className="flex flex-col gap-4 items-center">
-          {/* <Image
-            src="/ollama.png"
-            alt="AI"
-            width={60}
-            height={60}
-            className="h-20 w-14 object-contain dark:invert"
-          /> */}
-          <p className="text-center text-lg text-muted-foreground">
-            How can I help you today?
-          </p>
         </div>
       </div>
     );
   }
 
+  const copyResponseToClipboard = (code: string, messageId: number) => {
+    navigator.clipboard.writeText(code);
+    setCopiedMessageId(messageId);
+    toast.success("Code copied to clipboard!");
+    setTimeout(() => {
+      setCopiedMessageId(null);
+    }, 1500);
+  };
+
   return (
     <div
       id="scroller"
       className="w-full overflow-y-scroll overflow-x-hidden h-full justify-end"
+      style={{ height: "calc(100vh - 200px)" }} // Adjust height as needed
     >
       <div className="w-full flex flex-col overflow-x-hidden overflow-y-hidden min-h-full justify-end">
         {messages.map((message, index) => (
@@ -72,10 +76,6 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
             <div className="flex gap-3 items-center">
               {message.role === "user" && (
                 <div className="flex items-end w-full gap-3">
-                  {/* <span className="bg-accent p-3 rounded-md max-w-xs sm:max-w-2xl overflow-x-auto">
-                    {(message.content)}
-                  </span> */}
-
                   <span
                     className="bg-accent p-3 rounded-md w-full max-w-xs sm:max-w-2xl overflow-x-auto"
                     dangerouslySetInnerHTML={{
@@ -86,35 +86,34 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                   {/* <Avatar className="flex justify-start items-center overflow-hidden"> */}
                   <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
                     <UserIcon />
-                    {/* <AvatarImage
-                      alt="user"
-                      width={6}
-                      height={6}
-                      className="object-contain"
-                      asChild
-                    ></AvatarImage>
-                    <AvatarFallback>
-                      {name && name.substring(0, 2).toUpperCase()}
-                    </AvatarFallback> */}
                   </Avatar>
                 </div>
               )}
+
               {message.role === "assistant" && (
                 <div className="flex items-end gap-2">
-                  {/* <Avatar className="flex justify-start items-center"> */}
-                  <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
-                    <OllamaIcon />
-                    {/* <AvatarImage
-                      src="/ollama.png"
-                      alt="AI"
-                      width={6}
-                      height={6}
-                      className="object-contain dark:invert"
-                    />
-                    <AvatarFallback>
-                      {name && name.substring(0, 2).toUpperCase()}
-                    </AvatarFallback> */}
-                  </Avatar>
+                  {isLoading ? (
+                    <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
+                      <IconLogo className="object-contain dark:invert" />
+                    </Avatar>) : (
+                    <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
+                      <IconLogo className="object-contain" />
+                    </Avatar>
+                  )}
+
+                  {/* <Button
+                    onClick={() => copyResponseToClipboard(message.content)}
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 absolute top-2 right-2"
+                  >
+                    {isResponseCopied ? (
+                      <CheckIcon className="w-4 h-4 scale-100 transition-all" />
+                    ) : (
+                      <CopyIcon className="w-4 h-4 scale-100 transition-all" />
+                    )}
+                  </Button> */}
+
                   <span className="p-3 rounded-md max-w-xs sm:max-w-2xl overflow-x-auto">
                     {/* Check if the message content contains a code block */}
                     {message.content.split("```").map((part, index) => {
@@ -136,38 +135,45 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                         );
                       }
                     })}
+
                     {isLoading &&
                       messages.indexOf(message) === messages.length - 1 && (
                         <span className="animate-pulse" aria-label="Typing">
                           ...
                         </span>
                       )}
+
+                    {/* Copy button inside the response container */}
+                    {!isLoading && (
+                      <Button
+                        onClick={() => copyResponseToClipboard(message.content, index)}
+                        variant="ghost"
+                        size="icon"
+                        className="h-5 w-5"
+                      >
+                        {copiedMessageId === index ? (
+                          <CheckIcon className="w-4 h-4 scale-100 transition-all" />
+                        ) : (
+                          <CopyIcon className="w-4 h-4 scale-100 transition-all" />
+                        )}
+                      </Button>)}
                   </span>
                 </div>
               )}
             </div>
           </motion.div>
         ))}
-        {/* {loadingSubmit && (
+        {isLoading && (
           <div className="flex pl-4 pb-4 gap-2 items-center">
-            <Avatar className="flex justify-start items-center">
-              <AvatarImage
-                src="/ollama.png"
-                alt="AI"
-                width={6}
-                height={6}
-                className="object-contain dark:invert"
-              />
-            </Avatar>
             <div className="bg-accent p-3 rounded-md max-w-xs sm:max-w-2xl overflow-x-auto">
-            <div className="flex gap-1">
-              <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_1s_ease-in-out_infinite] dark:bg-slate-300"></span>
-              <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_0.5s_ease-in-out_infinite] dark:bg-slate-300"></span>
-              <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_1s_ease-in-out_infinite] dark:bg-slate-300"></span>
-            </div>
+              <div className="flex gap-1">
+                <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_1s_ease-in-out_infinite] dark:bg-slate-300"></span>
+                <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_0.5s_ease-in-out_infinite] dark:bg-slate-300"></span>
+                <span className="size-1.5 rounded-full bg-slate-700 motion-safe:animate-[bounce_1s_ease-in-out_infinite] dark:bg-slate-300"></span>
+              </div>
             </div>
           </div>
-        )} */}
+        )}
       </div>
 
       <div id="anchor" ref={bottomRef} className="my-4"></div>

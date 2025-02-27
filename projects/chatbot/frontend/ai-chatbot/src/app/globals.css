@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 
-
 @layer base {
   :root {
 
@@ -118,4 +117,13 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+#scroller {
+  scrollbar-width: none; /* Firefox */
+}
+
+#scroller::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }

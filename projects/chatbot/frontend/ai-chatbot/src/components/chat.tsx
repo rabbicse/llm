@@ -89,10 +89,6 @@ export function Chat({ id }: { id: string }) {
 
       if (!inputContent) return;
 
-      // service call and handle messages
-      //   try {
-      setIsLoading(true);
-
       const newMessage: Message = {
         id: generateUUID(),
         content: inputContent,
