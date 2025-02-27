@@ -3,11 +3,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import CodeDisplayBlock from "@/components/code-display-block";
 import { marked } from "marked";
 import { Message } from "@/lib/types";
-import { IconLogo, OllamaIcon, UserIcon } from "./ui/icons";
+import { AILogo, UserIcon } from "./ui/icons";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
@@ -31,8 +31,7 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
   if (messages === undefined || messages.length === 0) {
     return (
       <div className="w-full h-full flex justify-center items-center">
-        <div className="flex flex-col gap-4 items-center">
-        </div>
+        <div className="flex flex-col gap-4 items-center"></div>
       </div>
     );
   }
@@ -94,25 +93,16 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                 <div className="flex items-end gap-2">
                   {isLoading ? (
                     <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
-                      <IconLogo className="object-contain dark:invert" />
-                    </Avatar>) : (
+                      {/* <IconLogo className="object-contain dark:invert" /> */}
+                      <AILogo className="object-contain dark:invert" width={32} height={32} />
+                    </Avatar>
+                  ) : (
                     <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
-                      <IconLogo className="object-contain" />
+                      {/* <IconLogo className="object-contain" /> */}
+                      {/* <AILogo className="object-contain" /> */}
+                      <AILogo className="object-contain" width={32} height={32} />
                     </Avatar>
                   )}
-
-                  {/* <Button
-                    onClick={() => copyResponseToClipboard(message.content)}
-                    variant="ghost"
-                    size="icon"
-                    className="h-5 w-5 absolute top-2 right-2"
-                  >
-                    {isResponseCopied ? (
-                      <CheckIcon className="w-4 h-4 scale-100 transition-all" />
-                    ) : (
-                      <CopyIcon className="w-4 h-4 scale-100 transition-all" />
-                    )}
-                  </Button> */}
 
                   <span className="p-3 rounded-md max-w-xs sm:max-w-2xl overflow-x-auto">
                     {/* Check if the message content contains a code block */}
@@ -146,7 +136,9 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                     {/* Copy button inside the response container */}
                     {!isLoading && (
                       <Button
-                        onClick={() => copyResponseToClipboard(message.content, index)}
+                        onClick={() =>
+                          copyResponseToClipboard(message.content, index)
+                        }
                         variant="ghost"
                         size="icon"
                         className="h-5 w-5"
@@ -156,7 +148,8 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                         ) : (
                           <CopyIcon className="w-4 h-4 scale-100 transition-all" />
                         )}
-                      </Button>)}
+                      </Button>
+                    )}
                   </span>
                 </div>
               )}
