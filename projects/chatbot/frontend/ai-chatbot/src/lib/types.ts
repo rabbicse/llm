@@ -22,9 +22,6 @@ export interface Message {
      */
   role: "system" | "user" | "assistant";
 
-
-  isLoading?: boolean;
-
   /**
    * The parts of the message. Use this for rendering the message in the UI.
    *

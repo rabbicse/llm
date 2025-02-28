@@ -2,6 +2,8 @@ import json
 
 from ollama import Client
 
+from config import settings
+
 
 # Function to convert Ollama response to JSON serializable format
 def convert_to_serializable(response):
@@ -30,9 +32,8 @@ def convert_to_serializable(response):
 
 class OllamaService:
     def __init__(self,
-                 address: str = 'http://192.168.97.67:11434',
-                 # 'http://localhost:11434',  # 'http://192.168.97.67:11434',  # "http://localhost:11434",
-                 model: str = "deepseek-r1:1.5b"):
+                 address: str = f'{settings.OLLAMA_HOST}:{settings.OLLAMA_PORT}',
+                 model: str = settings.OLLAMA_MODEL):
         self._address = address
         self._model = model
 
@@ -44,28 +45,5 @@ class OllamaService:
 
         for chunk in stream:
             if 'message' in chunk and 'content' in chunk['message']:
-                # yield chunk['message']['content']
                 content = {'content': chunk['message']['content']}
                 yield f"data: {json.dumps(content)}\n\n"
-
-        # for chunk in stream:
-        #     formatted_chunk = convert_to_serializable(chunk)
-        #     yield f"data: {formatted_chunk}\n\n"
-        #     # print(chunk['model'])
-        #     # message_content = chunk.get('message', {}).get('content', '')
-        #     # if message_content:
-        #     #     # Wrap content in OpenAI-compatible format
-        #     #     formatted_chunk = {
-        #     #         "id": chunk.get('id', 'chatcmpl-xyz123'),
-        #     #         "object": "chat.completion.chunk",
-        #     #         "created": chunk.get('created_at', ''),
-        #     #         "model": self._model,
-        #     #         "choices": [
-        #     #             {
-        #     #                 "delta": {"content": message_content},
-        #     #                 "index": 0,
-        #     #                 "finish_reason": None
-        #     #             }
-        #     #         ]
-        #     #     }
-        #     #     yield f"data: {json.dumps(formatted_chunk)}\n\n"

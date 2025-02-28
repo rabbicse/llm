@@ -38,7 +38,7 @@ export const streamChat = async ({
       onmessage(event) {
         console.log(`${event.data}`);
         const text = JSON.parse(event.data);
-        const content = {
+        const content: Message = {
           id: generateUUID(),
           content: text["content"],
           role: "assistant",
