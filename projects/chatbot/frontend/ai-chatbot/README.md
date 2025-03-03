@@ -4,7 +4,7 @@
 
 Discover the power of AI chatbots and how they can revolutionize customer interactions, automate tasks, and enhance user experiences. Whether you're a developer, entrepreneur, or tech enthusiast, this ultimate guide will walk you through building and deploying AI-driven chatbots using cutting-edge technologies like Ollama, Deepseek-R1, Python, FastAPI, React, and Next.js.
 
-![ai-chatbot](screenshots/chatbot-ui.png)
+![ai-chatbot](../../../../screenshots/modern-ai-chatbot.webp)
 
 ## Core Technologies Used
 
