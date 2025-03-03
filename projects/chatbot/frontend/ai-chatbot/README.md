@@ -4,6 +4,8 @@
 
 Discover the power of AI chatbots and how they can revolutionize customer interactions, automate tasks, and enhance user experiences. Whether you're a developer, entrepreneur, or tech enthusiast, this ultimate guide will walk you through building and deploying AI-driven chatbots using cutting-edge technologies like Ollama, Deepseek-R1, Python, FastAPI, React, and Next.js.
 
+![ai-chatbot](screenshots/chatbot-ui.png)
+
 ## Core Technologies Used
 
 - **Ollama & Deepseek-R1** – Advanced AI models for natural language processing (NLP) and conversational AI.
@@ -1421,7 +1423,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ---
 
-Looking for expert insights? Connect with us for AI chatbot development support and guidance!
+Looking for expert insights? Connect with me for AI chatbot development support and guidance!
 
 ## References
 - [nextjs-chat-ai](https://github.com/addyosmani/nextjs-chat-ai)
+- [vercel ai-chatbot](https://github.com/vercel/ai-chatbot)
+- [morphic](https://github.com/miurla/morphic)
