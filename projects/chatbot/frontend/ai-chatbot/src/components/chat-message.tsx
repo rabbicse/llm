@@ -92,7 +92,7 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
               {message.role === "assistant" && (
                 <div className="flex items-end gap-2">
                   {isLoading &&
-                  messages.indexOf(message) === messages.length - 1 ? (
+                    messages.indexOf(message) === messages.length - 1 ? (
                     <Avatar className="flex justify-center items-center overflow-hidden w-12 h-12 rounded-full bg-gray-700">
                       {/* <IconLogo className="object-contain dark:invert" /> */}
                       <AILogo
@@ -127,9 +127,15 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
                           />
                         );
                       } else {
+                        // Extract language from the code block (assuming first word is the lang)
+                        const lines = part.split("\n");
+                        const firstLine = lines[0].trim();
+                        const detectedLang = /^[a-zA-Z]+$/.test(firstLine) ? firstLine : "plaintext"; // Default to 'plaintext' if no lang is specified
+                        const codeContent = detectedLang === "plaintext" ? part : lines.slice(1).join("\n");
+
                         return (
                           <pre className="whitespace-pre-wrap" key={index}>
-                            <CodeDisplayBlock code={part} lang="" />
+                            <CodeDisplayBlock code={codeContent} lang={detectedLang} />
                           </pre>
                         );
                       }

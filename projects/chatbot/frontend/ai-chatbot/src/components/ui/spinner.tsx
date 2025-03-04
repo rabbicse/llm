@@ -1,7 +1,6 @@
 // Based on: https://github.com/vercel/ai/blob/main/examples/next-ai-rsc/components/llm-stocks/spinner.tsx
 
-import { Card } from './card'
-// import { IconLogo } from './icons'
+import { AILogo } from './icons'
 
 export const Spinner = () => (
     <svg
@@ -18,8 +17,8 @@ export const Spinner = () => (
     </svg>
 )
 
-// export const LogoSpinner = () => (
-//     <div className="p-4 border border-background">
-//         <IconLogo className="w-4 h-4 animate-spin" />
-//     </div>
-// )
+export const LogoSpinner = () => (
+    <div className="p-4 border border-background">
+        <AILogo className="w-4 h-4 animate-spin" />
+    </div>
+)

@@ -46,7 +46,8 @@ export default function CodeDisplayBlock({ code, lang }: ButtonCodeblockProps) {
         }
         text={code}
         language={lang}
-        showLineNumbers={false}
+        wrapLongLines={false}
+        showLineNumbers={true}
         theme={theme === "dark" ? dracula : github}
       />
     </div>

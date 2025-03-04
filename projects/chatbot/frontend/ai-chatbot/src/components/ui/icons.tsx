@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { SVGProps } from "react";
 import { cn } from "@/lib/utils";
 
-function IconLogo({ className, ...props }: React.ComponentProps<"svg">) {
+export const IconLogo = ({ className, ...props }: React.ComponentProps<"svg">) => {
   return (
     <svg
       fill="currentColor"
@@ -24,7 +23,6 @@ function IconLogo({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-export { IconLogo };
 
 export const UserIcon = ({ size = 16 }) => {
   return (
