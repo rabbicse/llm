@@ -45,6 +45,17 @@ ollama serve
 ```
 It should run on the default port: `11434`
 
+To run ollama server as remote server, need to set environment variable `OLLAMA_HOST`. For example, to expose ip address need to set as the following way.
+
+For windows,
+```bash
+$env:OLLAMA_HOST="0.0.0.0"
+```
+Then run the following command.
+```bash
+ollama serve
+```
+
 Note: For more configurations like serving as a remote server, I will show the steps later. Stay tuned!!!
 
 ### REST API Backend
