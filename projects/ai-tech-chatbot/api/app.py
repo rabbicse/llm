@@ -12,7 +12,7 @@ app = FastAPI(title="RAG API with Deepseek (Streaming)",
               version=version)
 
 ollama_service = OllamaService()
-ollama_service.create_vector_store()
+ollama_service.create_vector_store(file_path='../rag_datasets/the_holy_quran.pdf')
 
 
 # Streaming Generator

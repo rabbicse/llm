@@ -2,29 +2,48 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import OllamaLLM, OllamaEmbeddings
+
+from config.settings import settings
 from data_ingestion import llm_config
 from data_ingestion.document_parser import DocumentParser
 
 
 class OllamaService:
     def __init__(self,
-                 model: str = "deepseek-r1:1.5b",
-                 base_url: str = "http://127.0.0.1:11434"):
+                 address: str = f'{settings.OLLAMA_HOST}:{settings.OLLAMA_PORT}',
+                 model: str = settings.OLLAMA_MODEL):
+        print(address)
         self.llm = OllamaLLM(model=model,
-                             base_url=base_url,
+                             base_url=address,
                              temperature=0)
         self.embed_model = OllamaEmbeddings(model=model,
-                                            base_url=base_url)
+                                            base_url=address)
 
     def create_vector_store(self, file_path: str = '../documents/top_10_codeing_pattern.pdf'):
+        print(f'creating vector store...')
         with DocumentParser(file_path=file_path) as document_parser:
+            print(f'parsing documents {file_path}')
             docs = document_parser.create_pdf_document_chunks()
+            print(docs)
+            print(f"Total document chunks: {len(docs)}")
             vector_store = FAISS.from_documents(documents=docs,
                                                 embedding=self.embed_model)
+            print(vector_store)
+
+            batch_size = 1  # Adjust as needed
+            vector_store = FAISS.from_texts(texts=[],embedding=self.embed_model)
+            print('vector store instance created...')
+
+            for i in range(0, len(docs), batch_size):
+                batch = docs[i:i + batch_size]
+                vector_store.add_documents(batch)
+                print(f"Added batch {i // batch_size + 1}")
+
             # vector_store = FAISS(embedding_function=self.embed_model)
             # vector_store.add_documents(docs)
             # Save and reload the vector store
             vector_store.save_local("faiss_index_")
+            print('Save done!')
 
     def retrieve_docs(self, query: str, k: int = 4):
         persisted_vectorstore = FAISS.load_local("faiss_index_",
