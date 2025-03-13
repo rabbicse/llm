@@ -1,5 +1,6 @@
 *.java linguist-detectable=true
 *.py linguist-detectable=true
+*.ipynb linguist-language=Python
 *.js linguist-detectable=true
 *.ts linguist-detectable=true
 *.html linguist-detectable=false
