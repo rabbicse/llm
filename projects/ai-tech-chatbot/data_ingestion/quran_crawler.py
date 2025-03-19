@@ -39,7 +39,7 @@ def get_surah_info(surah_number):
         basic["description"] = "".join(
             [str(content) for content in soup.find('div', class_=re.compile(r"Info_textBody__.*")).contents])
 
-        print(basic)
+        return basic
     except Exception as ex:
         print(ex)
         return {}
@@ -56,47 +56,44 @@ def get_surah_ayahs(surah_number):
 
     soup = BeautifulSoup(response.text, "html.parser")
 
+    json_data = json.loads(soup.find('script', id='__NEXT_DATA__').text.strip())
+    props =  json_data["props"]["pageProps"]
+    # chapter = props["chapterResponse"]
+    verses = props["versesResponse"]["verses"]
+
     ayahs_data = []
-    ayah_blocks = soup.find_all("div", class_=re.compile(r"TranslationViewCell_cellContainer__.*"))  # Adjust this if structure changes
-    print(len(ayah_blocks))
-
-    for ayah in ayah_blocks:
-        ayah_details = {}
-        try:
-            ayah_details["ayah_number"] = ayah.find("span", class_=re.compile(r"Button_content__.*")).text.strip()
-            ayah_details["arabic_text"] = ayah.find("div", class_=re.compile(r"TranslationViewCell_arabicVerseContainer__.*")).text.strip()
-            ayah_details["en_text"] = ayah.find("div", class_=re.compile(r"TranslationViewCell_verseTranslationContainer__.*")).text.strip()
-            print(ayah_details)
-            ayahs_data.append(ayah_details)
-        except Exception as ex:
-            print(ex)
-            continue  # Skip ayahs that don't match structure
-
+    for verse in verses:
+        ayahs_data.append({
+            "ayah_number": verse["verseKey"],
+            "arabic_text": verse["textUthmani"],
+            "en_text": "".join([translation["text"] for translation in verse["translations"]]),
+        })
     return ayahs_data
 
 
 def crawl_quran():
     """Crawl all 114 Surahs (info + Ayahs) and save them in JSON."""
-    quran_data = {}
+    quran_data = []
 
     for surah_number in tqdm(range(1, 115), desc="Crawling Quran"):
         surah_info = get_surah_info(surah_number)
         ayahs = get_surah_ayahs(surah_number)
 
         if surah_info and ayahs:
-            quran_data[surah_number] = {
-                **surah_info,
-                "ayahs": ayahs
-            }
+            # quran_data[surah_info["surah_name"]] = {
+            #     **surah_info,
+            #     "ayahs": ayahs
+            # }
+            quran_data.append({**surah_info, "ayahs": ayahs})
 
     # Save to JSON
-    with open("quran_data.json", "w", encoding="utf-8") as f:
+    with open("../rag_datasets/quran_data.json", "w", encoding="utf-8") as f:
         json.dump(quran_data, f, ensure_ascii=False, indent=4)
 
     print("✅ Quran data saved successfully!")
 
 
 # Run the crawler
-# crawl_quran()
+crawl_quran()
 # get_surah_info(1)
-get_surah_ayahs(1)
+# get_surah_ayahs(1)
