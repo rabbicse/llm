@@ -1,12 +1,15 @@
 import json
 
 from langchain.chains import RetrievalQA
+from langchain.chains.retrieval import create_retrieval_chain
 from langchain.prompts import ChatPromptTemplate
+from langchain_core.documents import Document
 from langchain_ollama import OllamaLLM, OllamaEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
+from sqlalchemy.testing.suite.test_reflection import metadata
 
 from config.settings import settings
 from data_ingestion import llm_config
@@ -48,22 +51,27 @@ class QuranService:
         # Convert Quran data into a list of documents
         documents = []
         for surah in quran:
-            documents.append(json.dumps(surah))
+            document = Document(page_content=json.dumps(surah).replace('{', '').replace('}', ''),
+                                metadata={"surah_name": surah["surah_name"]})
+
+            if "ayah" in surah:
+                document.metadata["ayah_number"] = surah["ayah"]["ayah_number"]
+            documents.append(document)
 
         # Chunking the text
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        chunks = text_splitter.split_text("\n".join(documents))
+        chunks = text_splitter.split_documents(documents=documents)
         print(f"Total Chunks: {len(chunks)}")
 
         # Index chunks
         for index, chunk in enumerate(chunks):
             print(f'inserting chunk {index}...')
-            _ = self.vector_store.add_texts(texts=[chunk])
+            _ = self.vector_store.add_documents([chunk])
 
         print("Quranic text indexed successfully!")
 
-    def retrieve_docs(self, query: str, k: int = 4):
-        return self.vector_store.similarity_search_with_score(query=query, k=k)
+    def retrieve_docs(self, query: str, k: int = 5):
+        return self.vector_store.similarity_search_with_score(query=query, k = 200)
 
     def ask(self, question: str):
         """
@@ -105,9 +113,23 @@ class QuranService:
         for chunk in response:
             yield chunk
 
+    def ask_quran(self, question: str):
+        # Create retriever from vector store
+        retriever = self.vector_store.as_retriever()
+
+        # Create the retrieval chain
+        qa_chain = create_retrieval_chain(retriever, self.llm)
+
+        # Example Query
+        response = qa_chain.invoke(question)
+        print(response)
+
 
 if __name__ == '__main__':
     service = QuranService()
     # service.create_vector_store()
-    for chunk in service.ask("Al-fatihah ayahs count?"):
+    for chunk in service.ask("Why the name Al-Baqarah?"):
         print(chunk, end='')
+
+    # question = "How many ayahs are inside Surah Al Fatihah?"
+    # service.ask_quran(question=question)

@@ -3,6 +3,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 import json
+
+from requests import session
 from tqdm import tqdm
 import time
 
@@ -12,11 +14,12 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
+session = requests.Session()
 
 def get_surah_info(surah_number):
     """Scrape Surah details like name, meaning, revelation type, and ayah count."""
     url = f"{BASE_URL}/surah/{surah_number}/info"
-    response = requests.get(url, headers=HEADERS)
+    response = session.get(url, headers=HEADERS)
 
     if response.status_code != 200:
         print(f"⚠️ Failed to fetch Surah {surah_number} info")
@@ -47,25 +50,30 @@ def get_surah_info(surah_number):
 
 def get_surah_ayahs(surah_number):
     """Scrape Ayahs from a given Surah page."""
-    url = f"{BASE_URL}/{surah_number}"
-    response = requests.get(url, headers=HEADERS)
+    url = f"https://quran.com/api/proxy/content/api/qdc/verses/by_chapter/{surah_number}?words=true&translation_fields=resource_name%2Clanguage_id&per_page=500000&fields=text_uthmani%2Cchapter_id%2Chizb_number%2Ctext_imlaei_simple&translations=131&reciter=7&word_translation_language=en&page=1"
+    # url = f"{BASE_URL}/{surah_number}"
+    response = session.get(url, headers=HEADERS)
 
     if response.status_code != 200:
         print(f"⚠️ Failed to fetch Surah {surah_number}")
         return []
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    # soup = BeautifulSoup(response.text, "html.parser")
 
-    json_data = json.loads(soup.find('script', id='__NEXT_DATA__').text.strip())
-    props =  json_data["props"]["pageProps"]
-    # chapter = props["chapterResponse"]
-    verses = props["versesResponse"]["verses"]
+    # json_data = json.loads(soup.find('script', id='__NEXT_DATA__').text.strip())
+    # props =  json_data["props"]["pageProps"]
+    # # chapter = props["chapterResponse"]
+    # verses = props["versesResponse"]["verses"]
+
+    json_data = response.json()
+    verses = json_data["verses"]
+    # print(f"Total verses: {len(verses)}")
 
     ayahs_data = []
     for verse in verses:
         ayahs_data.append({
-            "ayah_number": verse["verseKey"],
-            "arabic_text": verse["textUthmani"],
+            "ayah_number": verse["verse_key"],
+            "arabic_text": verse["text_uthmani"],
             "en_text": "".join([translation["text"] for translation in verse["translations"]]),
         })
     return ayahs_data
@@ -84,7 +92,9 @@ def crawl_quran():
             #     **surah_info,
             #     "ayahs": ayahs
             # }
-            quran_data.append({**surah_info, "ayahs": ayahs})
+            quran_data.append({**surah_info})
+            for ayah in ayahs:
+                quran_data.append({"surah_name": surah_info["surah_name"], "ayah": ayah})
 
     # Save to JSON
     with open("../rag_datasets/quran_data.json", "w", encoding="utf-8") as f:
@@ -95,5 +105,6 @@ def crawl_quran():
 
 # Run the crawler
 crawl_quran()
-# get_surah_info(1)
-# get_surah_ayahs(1)
+# get_surah_info(45)
+# ayah_data = get_surah_ayahs(45)
+# print(ayah_data)
