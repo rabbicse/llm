@@ -40,7 +40,7 @@ def get_surah_info(surah_number):
                 basic["revelation_place"] = detail_header.find_next_sibling('p').text.strip()
 
         basic["description"] = "".join(
-            [str(content) for content in soup.find('div', class_=re.compile(r"Info_textBody__.*")).contents])
+            [str(content) for content in soup.find('div', class_=re.compile(r"Info_textBody__.*")).text.strip()])
 
         return basic
     except Exception as ex:
@@ -73,7 +73,7 @@ def get_surah_ayahs(surah_number):
     for verse in verses:
         ayahs_data.append({
             "ayah_number": verse["verse_key"],
-            "arabic_text": verse["text_uthmani"],
+            # "arabic_text": verse["text_uthmani"],
             "en_text": "".join([translation["text"] for translation in verse["translations"]]),
         })
     return ayahs_data

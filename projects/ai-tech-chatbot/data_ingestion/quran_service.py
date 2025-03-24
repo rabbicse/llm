@@ -70,8 +70,8 @@ class QuranService:
 
         print("Quranic text indexed successfully!")
 
-    def retrieve_docs(self, query: str, k: int = 5):
-        return self.vector_store.similarity_search_with_score(query=query, k = 200)
+    def retrieve_docs(self, query: str, k: int = 10):
+        return self.vector_store.similarity_search_with_score(query=query, k = k)
 
     def ask(self, question: str):
         """
@@ -95,7 +95,7 @@ class QuranService:
         context = "\n\n".join([doc.page_content.replace('{', '').replace('}', '') for doc, score in documents])
 
         # Properly format the prompt with context and question
-        prompt_text = llm_config.TEMPLATE.format(question=question, context=context)
+        prompt_text = llm_config.QURAN_TEMPLATE.format(question=question, context=context)
 
         prompt = ChatPromptTemplate.from_template(template=prompt_text)
 
@@ -128,7 +128,7 @@ class QuranService:
 if __name__ == '__main__':
     service = QuranService()
     # service.create_vector_store()
-    for chunk in service.ask("Why the name Al-Baqarah?"):
+    for chunk in service.ask("Who is Musa"):
         print(chunk, end='')
 
     # question = "How many ayahs are inside Surah Al Fatihah?"
