@@ -128,7 +128,7 @@ class QuranService:
 if __name__ == '__main__':
     service = QuranService()
     # service.create_vector_store()
-    for chunk in service.ask("Who is Musa"):
+    for chunk in service.ask("Did Prophet Idris die?"):
         print(chunk, end='')
 
     # question = "How many ayahs are inside Surah Al Fatihah?"
