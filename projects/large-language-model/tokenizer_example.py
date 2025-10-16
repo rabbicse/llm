@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 from config import GPT_CONFIG_124M
-from gpt_model import DummyGPTModel
+from models import DummyGPTModel
 from layer_norm import LayerNorm
 
 tokenizer = tiktoken.get_encoding("gpt2")
